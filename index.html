@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ashutosh Vishwakarma — Researcher & Nanofabricator</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:      #f4f7ff;
+    --bg2:     #ffffff;
+    --accent:  #2f5de8;
+    --accent2: #0891b2;
+    --text:    #0d1b3e;
+    --muted:   #5a6a8a;
+    --border:  rgba(47,93,232,0.14);
+    --card:    #ffffff;
+    --shadow:  0 2px 20px rgba(47,93,232,0.09);
+    --glow:    0 4px 32px rgba(47,93,232,0.18);
+    --radius:  14px;
+    --font:    'Inter', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.65; overflow-x: hidden; }
+  a { color: var(--accent); text-decoration: none; transition: color .2s; }
+  a:hover { color: var(--accent2); }
+  ::selection { background: rgba(47,93,232,.18); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  /* Canvas */
+  #canvas-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .5; }
+
+  /* Layout */
+  .container { max-width: 1060px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  section { padding: 96px 0; }
+  .section-label { font-size: .77rem; letter-spacing: .15em; text-transform: uppercase; color: var(--accent2); margin-bottom: 8px; font-weight: 700; }
+  .section-title { font-size: clamp(1.75rem,4vw,2.4rem); font-weight: 800; margin-bottom: 52px; background: linear-gradient(120deg,var(--text) 55%,var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; backdrop-filter: blur(20px) saturate(200%); background: rgba(244,247,255,.88); border-bottom: 1px solid var(--border); transition: box-shadow .3s; }
+  nav.scrolled { box-shadow: 0 2px 24px rgba(47,93,232,.1); }
+  .nav-inner { max-width: 1060px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 62px; }
+  .nav-logo { font-weight: 900; font-size: 1.05rem; background: linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a { font-size: .87rem; font-weight: 500; color: var(--muted); letter-spacing: .03em; transition: color .2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+  .mobile-menu { display: none; flex-direction: column; background: var(--bg2); border-top: 1px solid var(--border); padding: 16px 24px; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { padding: 10px 0; font-size: .95rem; color: var(--muted); border-bottom: 1px solid var(--border); }
+
+  /* HERO */
+  #hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 80px 0 60px; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-size: .79rem; letter-spacing: .13em; text-transform: uppercase; color: var(--accent2); font-weight: 700; margin-bottom: 24px; }
+  .hero-tag::before { content: ''; width: 28px; height: 2px; background: var(--accent2); border-radius: 2px; }
+  h1 { font-size: clamp(2.8rem,7vw,5rem); font-weight: 900; line-height: 1.07; margin-bottom: 20px; }
+  h1 .line1 { display: block; color: var(--text); }
+  h1 .line2 { display: block; background: linear-gradient(110deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero-sub { font-size: 1.12rem; color: var(--muted); max-width: 560px; margin-bottom: 40px; line-height: 1.75; }
+  .hero-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 44px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 99px; border: 1.5px solid var(--border); font-size: .8rem; color: var(--muted); background: var(--card); box-shadow: var(--shadow); transition: border-color .2s,color .2s; }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary { padding: 13px 28px; border-radius: 10px; font-size: .9rem; font-weight: 700; background: linear-gradient(135deg,var(--accent),var(--accent2)); color: #fff; border: none; cursor: pointer; box-shadow: 0 4px 20px rgba(47,93,232,.35); transition: transform .2s,box-shadow .2s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(47,93,232,.45); }
+  .btn-outline { padding: 12px 28px; border-radius: 10px; font-size: .9rem; font-weight: 600; border: 1.5px solid var(--border); color: var(--text); background: var(--card); cursor: pointer; box-shadow: var(--shadow); transition: border-color .2s,box-shadow .2s; }
+  .btn-outline:hover { border-color: var(--accent); box-shadow: var(--glow); }
+  .hero-stats { display: flex; gap: 40px; margin-top: 52px; flex-wrap: wrap; padding-top: 40px; border-top: 1.5px solid var(--border); }
+  .stat-num { font-size: 2rem; font-weight: 900; background: linear-gradient(120deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+  .stat-label { font-size: .82rem; color: var(--muted); margin-top: 4px; }
+
+  /* ABOUT */
+  #about { background: var(--bg2); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .about-text p { color: var(--muted); margin-bottom: 16px; font-size: .97rem; }
+  .about-highlights { display: flex; flex-direction: column; gap: 14px; }
+  .highlight-card { padding: 18px 22px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--bg); box-shadow: var(--shadow); transition: border-color .3s,transform .3s,box-shadow .3s; }
+  .highlight-card:hover { border-color: var(--accent); transform: translateX(6px); box-shadow: var(--glow); }
+  .highlight-title { font-weight: 700; font-size: .92rem; margin-bottom: 4px; color: var(--text); }
+  .highlight-sub { font-size: .82rem; color: var(--muted); }
+
+  /* EXPERIENCE */
+  #experience { background: var(--bg); }
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(to bottom,var(--accent),var(--accent2),rgba(47,93,232,.1)); border-radius: 2px; }
+  .timeline-item { position: relative; margin-bottom: 44px; }
+  .timeline-item:last-child { margin-bottom: 0; }
+  .timeline-dot { position: absolute; left: -28px; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 3px solid var(--bg); box-shadow: 0 0 0 3px rgba(47,93,232,.3); transition: box-shadow .3s; }
+  .timeline-item:hover .timeline-dot { box-shadow: 0 0 0 6px rgba(47,93,232,.18); }
+  .timeline-card { padding: 24px 28px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--card); box-shadow: var(--shadow); transition: border-color .3s,box-shadow .3s; }
+  .timeline-card:hover { border-color: var(--accent); box-shadow: var(--glow); }
+  .tl-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .tl-title { font-weight: 700; font-size: 1rem; color: var(--text); }
+  .tl-org { font-size: .85rem; color: var(--accent2); margin-top: 3px; font-weight: 600; }
+  .tl-date { font-size: .78rem; color: var(--muted); padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border); white-space: nowrap; background: var(--bg); }
+  .tl-bullets { list-style: none; }
+  .tl-bullets li { font-size: .88rem; color: var(--muted); padding: 4px 0 4px 18px; position: relative; }
+  .tl-bullets li::before { content: '▸'; position: absolute; left: 0; color: var(--accent2); font-size: .75rem; top: 5px; }
+
+  /* PROJECTS — 2×2 */
+  #projects { background: var(--bg2); }
+  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .project-card { padding: 26px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--card); box-shadow: var(--shadow); transition: border-color .3s,transform .3s,box-shadow .3s; display: flex; flex-direction: column; cursor: pointer; }
+  .project-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 12px 40px rgba(47,93,232,.15); }
+  .project-tag { font-size: .71rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; color: var(--accent2); margin-bottom: 10px; }
+  .project-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+  .project-desc { font-size: .86rem; color: var(--muted); flex: 1; line-height: 1.68; }
+  .project-explore { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; font-size: .8rem; font-weight: 700; color: var(--accent); border-top: 1px solid var(--border); padding-top: 14px; }
+  .project-explore svg { transition: transform .2s; }
+  .project-card:hover .project-explore svg { transform: translateX(4px); }
+  .project-date { font-size: .78rem; color: var(--muted); font-weight: 500; }
+  .project-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .pill { font-size: .71rem; padding: 3px 10px; border-radius: 99px; background: rgba(47,93,232,.07); border: 1px solid rgba(47,93,232,.18); color: var(--accent); font-weight: 500; }
+
+  /* SKILLS — 2×2 */
+  #skills { background: var(--bg); }
+  .skills-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .skill-group { padding: 26px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--card); box-shadow: var(--shadow); transition: border-color .3s,box-shadow .3s; }
+  .skill-group:hover { border-color: var(--accent2); box-shadow: 0 4px 28px rgba(8,145,178,.14); }
+  .skill-group-icon { font-size: 1.6rem; margin-bottom: 12px; }
+  .skill-group-title { font-weight: 700; font-size: .95rem; margin-bottom: 8px; color: var(--text); }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+  .skill-tag { font-size: .76rem; padding: 4px 11px; border-radius: 99px; border: 1px solid var(--border); color: var(--muted); background: var(--bg); transition: border-color .2s,color .2s; }
+  .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* PUBLICATIONS */
+  #publications { background: var(--bg2); }
+  .pub-list { display: flex; flex-direction: column; gap: 14px; }
+  .pub-item { padding: 20px 24px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--card); box-shadow: var(--shadow); display: flex; gap: 16px; align-items: flex-start; transition: border-color .3s,box-shadow .3s; }
+  .pub-item:hover { border-color: var(--accent); box-shadow: var(--glow); }
+  .pub-icon { width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; background: rgba(47,93,232,.07); border: 1px solid rgba(47,93,232,.18); }
+  .pub-text .pub-title { font-size: .9rem; font-weight: 700; margin-bottom: 3px; color: var(--text); font-style: italic; }
+  .pub-text .pub-venue { font-size: .82rem; color: var(--accent2); font-weight: 600; }
+  .pub-text .pub-year { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+  .pub-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .pub-doi { display: inline-flex; align-items: center; gap: 5px; font-size: .76rem; color: var(--accent); border: 1px solid rgba(47,93,232,.25); background: rgba(47,93,232,.06); padding: 3px 10px; border-radius: 99px; font-weight: 600; transition: background .2s,border-color .2s; }
+  .pub-doi:hover { background: rgba(47,93,232,.14); border-color: var(--accent); color: var(--accent); }
+  .pub-detail-btn { display: inline-flex; align-items: center; gap: 5px; font-size: .76rem; color: var(--accent2); border: 1px solid rgba(8,145,178,.25); background: rgba(8,145,178,.06); padding: 3px 10px; border-radius: 99px; font-weight: 600; cursor: pointer; transition: background .2s; }
+  .pub-detail-btn:hover { background: rgba(8,145,178,.14); }
+
+  /* EDUCATION */
+  #education { background: var(--bg); }
+  .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  .edu-card { padding: 28px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--card); box-shadow: var(--shadow); transition: border-color .3s,box-shadow .3s; position: relative; overflow: hidden; }
+  .edu-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg,var(--accent),var(--accent2)); }
+  .edu-card:hover { border-color: var(--accent); box-shadow: var(--glow); }
+  .edu-degree { font-weight: 800; font-size: 1rem; margin-bottom: 5px; color: var(--text); }
+  .edu-inst { font-size: .88rem; color: var(--accent2); margin-bottom: 10px; font-weight: 600; }
+  .edu-cgpa { display: inline-flex; align-items: center; gap: 6px; font-size: .8rem; color: var(--muted); padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border); background: var(--bg); }
+  .edu-cgpa strong { color: var(--accent); }
+  .edu-courses-btn { margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--bg); color: var(--accent); font-size: .82rem; font-weight: 600; cursor: pointer; transition: border-color .2s,box-shadow .2s; width: 100%; justify-content: space-between; }
+  .edu-courses-btn:hover { border-color: var(--accent); box-shadow: var(--glow); }
+  .edu-courses-btn .arrow { transition: transform .3s; display: inline-block; }
+  .edu-courses-btn.open .arrow { transform: rotate(180deg); }
+  .edu-courses-list { max-height: 0; overflow: hidden; transition: max-height .45s ease; }
+  .edu-courses-list.open { max-height: 1000px; }
+  .edu-courses-inner { margin-top: 14px; padding-left: 4px; border-left: 2px solid var(--border); }
+  .edu-course-item { font-size: .82rem; color: var(--muted); padding: 5px 0 5px 14px; line-height: 1.5; }
+  .edu-course-item + .edu-course-item { border-top: 1px solid rgba(47,93,232,.06); }
+
+  /* PHOTOGRAPHY */
+  #photography { background: var(--bg2); }
+  .photo-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .photo-item { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; border: 1.5px solid var(--border); box-shadow: var(--shadow); cursor: pointer; }
+  .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+  .photo-item:hover img { transform: scale(1.06); }
+
+  /* CONTACT — no form, full-width links */
+  #contact { background: var(--bg); }
+  .contact-wrapper { max-width: 640px; }
+  .contact-wrapper p { color: var(--muted); font-size: .95rem; line-height: 1.75; margin-bottom: 32px; }
+  .contact-links { display: flex; flex-direction: column; gap: 12px; }
+  .contact-link { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--card); color: var(--text); font-size: .9rem; box-shadow: var(--shadow); transition: border-color .3s,box-shadow .3s,transform .2s; }
+  .contact-link:hover { border-color: var(--accent); box-shadow: var(--glow); transform: translateX(4px); color: var(--text); }
+  .contact-link-icon { width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(47,93,232,.08); border: 1px solid rgba(47,93,232,.2); font-size: 1rem; }
+
+  /* FOOTER */
+  footer { text-align: center; padding: 32px 24px; border-top: 1.5px solid var(--border); font-size: .82rem; color: var(--muted); position: relative; z-index: 1; background: var(--bg2); }
+  footer span { color: var(--accent2); font-weight: 600; }
+
+  /* ── MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(13,27,62,.55); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: var(--bg2); border-radius: 20px; border: 1.5px solid var(--border); box-shadow: 0 24px 80px rgba(47,93,232,.22); max-width: 780px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; padding: 40px; margin: auto; }
+  .modal-close { position: sticky; top: 0; float: right; margin-bottom: 8px; margin-left: 8px; width: 34px; height: 34px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--border); font-size: 1.15rem; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; transition: background .2s; flex-shrink: 0; z-index: 1; }
+  .modal-close:hover { background: rgba(47,93,232,.1); }
+  .modal-tag { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent2); margin-bottom: 8px; }
+  .modal-title { font-size: 1.35rem; font-weight: 800; color: var(--text); margin-bottom: 20px; line-height: 1.3; }
+  .modal-section-label { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; margin-top: 24px; }
+  .modal-abstract { font-size: .9rem; color: var(--muted); line-height: 1.78; background: var(--bg); border-radius: 10px; padding: 18px 20px; border: 1px solid var(--border); }
+  .modal-img-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 12px; margin-top: 16px; }
+  .modal-img { width: 100%; border-radius: 10px; object-fit: contain; border: 1.5px solid var(--border); background: var(--bg); max-height: 320px; }
+  .modal-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+  .modal-date { font-size: .8rem; color: var(--muted); margin-top: 6px; }
+  .modal-doi-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: .84rem; font-weight: 700; color: var(--accent); border: 1.5px solid rgba(47,93,232,.25); background: rgba(47,93,232,.06); padding: 7px 16px; border-radius: 99px; transition: background .2s; }
+  .modal-doi-link:hover { background: rgba(47,93,232,.14); color: var(--accent); }
+
+  /* REVEAL */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease,transform .6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .about-grid,.edu-grid { grid-template-columns: 1fr; }
+    .projects-grid,.skills-wrapper { grid-template-columns: 1fr; }
+    .photo-grid { grid-template-columns: repeat(2,1fr); }
+    .hero-stats { gap: 24px; }
+    section { padding: 72px 0; }
+    h1 { font-size: 2.4rem; }
+    .modal-box { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">AV</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#publications">Publications</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#photography">Creative</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="#about">About</a><a href="#experience">Experience</a><a href="#projects">Projects</a>
+    <a href="#skills">Skills</a><a href="#publications">Publications</a>
+    <a href="#education">Education</a><a href="#photography">Creative</a><a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-tag">Doctoral Researcher · IISc Bengaluru</div>
+    <h1><span class="line1">Ashutosh</span><span class="line2">Vishwakarma</span></h1>
+    <p class="hero-sub">Thin-film process engineer and nanofabricator working at the intersection of quantum sensing, photonics, and materials science. Building next-generation superconducting detectors and infrared photosensors from the cleanroom up.</p>
+    <div class="hero-chips">
+      <span class="chip"><span class="chip-dot"></span>SNSPD Development</span>
+      <span class="chip"><span class="chip-dot"></span>Reactive Sputtering</span>
+      <span class="chip"><span class="chip-dot"></span>Sub-50 nm Nanowires</span>
+      <span class="chip"><span class="chip-dot"></span>Infrared Photodetection</span>
+      <span class="chip"><span class="chip-dot"></span>Cleanroom Fabrication</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#projects"><button class="btn-primary">View Projects</button></a>
+      <a href="#contact"><button class="btn-outline">Get In Touch</button></a>
+    </div>
+    <div class="hero-stats">
+      <div><div class="stat-num" data-target="300">0</div><div class="stat-label">Sputtering Runs</div></div>
+      <div><div class="stat-num" data-target="3">0</div><div class="stat-label">Publications</div></div>
+      <div><div class="stat-num" data-target="1">0</div><div class="stat-label">Patent Filed</div></div>
+      <div><div class="stat-num" data-target="4">0</div><div class="stat-label">Key Projects</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="container">
+    <p class="section-label">About Me</p>
+    <h2 class="section-title">From Atoms to Devices</h2>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>I'm a PhD researcher at the Centre for Nano Science and Engineering (CeNSE), Indian Institute of Science, Bengaluru, specializing in thin-film process engineering and micro/nanofabrication. My doctoral work focuses on developing superconducting nanowire single-photon detectors (SNSPDs) — devices that operate near absolute zero and count individual photons.</p>
+        <p>With over 300 sputtering runs and years of cleanroom experience, I bridge the gap between fundamental materials science and practical device performance. I take pride in correlating process parameters with structural and electrical data to establish reproducible, high-yield fabrication windows.</p>
+        <p>Before research, I worked as a Signal &amp; Telecom Site Engineer with Rail Vikas Nigam Limited, which gave me a strong appreciation for field execution, cross-team coordination, and delivering under strict constraints.</p>
+        <p>Outside the lab I am active in photography and movie making — currently leading IISc's creative team. This work sharpens my eye for composition, storytelling, and delivering polished output under deadline pressure.</p>
+      </div>
+      <div class="about-highlights reveal" style="transition-delay:.15s">
+        <div class="highlight-card"><div class="highlight-title">🎓 Ph.D., Nano Science &amp; Engineering</div><div class="highlight-sub">Indian Institute of Science, Bengaluru · CGPA 8.5</div></div>
+        <div class="highlight-card"><div class="highlight-title">🏛 CeNSE Cleanroom</div><div class="highlight-sub">6+ years · DC/RF sputtering, EBL, RIE, metallization</div></div>
+        <div class="highlight-card"><div class="highlight-title">🔬 SNSPD Focus</div><div class="highlight-sub">Improved device T<sub>c</sub> from 2.6 K → ~14.5 K</div></div>
+        <div class="highlight-card"><div class="highlight-title">🎬 Photography &amp; Film</div><div class="highlight-sub">Convener IISc Photography Club (2022–2024) · Movie making</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ── -->
+<section id="experience">
+  <div class="container">
+    <p class="section-label">Experience</p>
+    <h2 class="section-title">Professional Journey</h2>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="tl-header">
+            <div><div class="tl-title">Doctoral Researcher — Thin-Film Process Engineering</div><div class="tl-org">CeNSE, Indian Institute of Science, Bengaluru</div></div>
+            <div class="tl-date">2020 – Present</div>
+          </div>
+          <ul class="tl-bullets">
+            <li>Own end-to-end thin-film deposition and nanofabrication processes — sputtering, lithography, etching, and metallization — in a state-of-the-art cleanroom environment.</li>
+            <li>Executed 300+ sputtering runs, developing deep expertise in process parameter optimization and failure analysis.</li>
+            <li>Developed and stabilized sputtering recipes for NbN, CuFeSe₂, and Sb₂Te₃ films through systematic tuning of power, pressure, gas ratio, and substrate temperature.</li>
+            <li>Correlated process parameters with structural (XRD, Raman) and electrical data to identify failure mechanisms and establish reproducible process windows.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="timeline-item reveal" style="transition-delay:.1s">
+        <div class="timeline-dot" style="background:var(--accent2);box-shadow:0 0 0 3px rgba(8,145,178,.3)"></div>
+        <div class="timeline-card">
+          <div class="tl-header">
+            <div><div class="tl-title">Signal &amp; Telecom Site Engineer</div><div class="tl-org">Rail Vikas Nigam Limited</div></div>
+            <div class="tl-date">Aug 2018 – Dec 2019</div>
+          </div>
+          <ul class="tl-bullets">
+            <li>Executed field installation and testing under strict safety, quality, and timeline constraints.</li>
+            <li>Coordinated with multidisciplinary teams across civil, electrical, and telecom domains to deliver on schedule.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="container">
+    <p class="section-label">Research Projects</p>
+    <h2 class="section-title">Key Projects</h2>
+    <div class="projects-grid">
+
+      <div class="project-card reveal" onclick="openProjectModal('snspd')">
+        <div class="project-tag">Quantum Sensing · Superconductivity</div>
+        <div class="project-title">SNSPD NbN Thin-Film Process Development</div>
+        <div class="project-desc">Debugged and stabilized reactive DC sputtering of ultra-thin NbN films, improving device T<sub>c</sub> from 2.6 K to ~14.5 K. Established lithography and RIE windows for sub-50 nm nanowires. Analyzed switching behavior of meander and spiral SNSPD geometries.</div>
+        <div class="project-pills">
+          <span class="pill">Sputtering</span><span class="pill">EBL</span><span class="pill">RIE</span><span class="pill">SEM</span><span class="pill">XRD</span><span class="pill">Raman</span><span class="pill">XPS</span><span class="pill">Cryogenics</span><span class="pill">Python</span>
+        </div>
+        <div class="project-explore">Explore details <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="project-date">Aug 2024 – Dec 2025</div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:.08s" onclick="openProjectModal('sb2te3')">
+        <div class="project-tag">Optoelectronics · Heterojunctions</div>
+        <div class="project-title">Sb₂Te₃ Heterojunction Stack Process Integration</div>
+        <div class="project-desc">Integrated Sb₂Te₃/TiO₂ and Sb₂Te₃/MoTe₂ stacks for broadband photodetection (400–1700 nm). Achieved self-powered photovoltaic operation with dark current as low as 20 pA and responsivity up to 7.8 A/W at 2 V bias.</div>
+        <div class="project-pills">
+          <span class="pill">Sputtering</span><span class="pill">RIE</span><span class="pill">SEM</span><span class="pill">XRD</span><span class="pill">Raman</span><span class="pill">XPS</span><span class="pill">Hall Measurement</span><span class="pill">Python</span>
+        </div>
+        <div class="project-explore">Explore details <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="project-date">Jan 2024 – Aug 2024</div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:.16s" onclick="openProjectModal('bolometer')">
+        <div class="project-tag">Infrared Sensing · Bolometry</div>
+        <div class="project-title">CuFeSe₂ Nanocrystal Bolometric Sensor</div>
+        <div class="project-desc">Developed solution-processed CuFeSe₂ nanocrystal films for uncooled bolometric sensing. Extracted TCR of 1.9%/K at room temperature with responsivity 0.101 A/W — competitive with commercial VOx devices.</div>
+        <div class="project-pills">
+          <span class="pill">TCR Extraction</span><span class="pill">FTIR</span><span class="pill">UV-Vis</span><span class="pill">SEM</span><span class="pill">Raman</span><span class="pill">Dektak Profilometry</span>
+        </div>
+        <div class="project-explore">Explore details <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="project-date">2021 – 2023</div>
+      </div>
+
+      <div class="project-card reveal" style="transition-delay:.24s" onclick="openProjectModal('cufese2opt')">
+        <div class="project-tag">SWIR Absorbers · Process Optimization</div>
+        <div class="project-title">CuFeSe₂ Thin-Film Process Optimization</div>
+        <div class="project-desc">Developed DC sputtering recipes with controlled stoichiometry and surface morphology. Optimized post-deposition annealing (100–400 °C) to improve crystallinity and study electrical photoresponse of CuFeSe₂ SWIR absorber devices.</div>
+        <div class="project-pills">
+          <span class="pill">TCR Extraction</span><span class="pill">FTIR</span><span class="pill">UV-Vis</span><span class="pill">SEM</span><span class="pill">Raman</span><span class="pill">Dektak Profilometry</span><span class="pill">XPS</span>
+        </div>
+        <div class="project-explore">Explore details <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="project-date">Dec 2022 – Jan 2023</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills">
+  <div class="container">
+    <p class="section-label">Technical Skills</p>
+    <h2 class="section-title">Expertise</h2>
+    <div class="skills-wrapper">
+      <div class="skill-group reveal">
+        <div class="skill-group-icon">⚡</div>
+        <div class="skill-group-title">Thin-Film Process Engineering</div>
+        <p style="font-size:.84rem;color:var(--muted);line-height:1.65">DC/RF magnetron sputtering of metals, nitrides, and chalcogenides. Reactive sputtering, process window development, stoichiometry control, and rapid thermal annealing.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">DC Magnetron Sputtering</span><span class="skill-tag">RF Sputtering</span><span class="skill-tag">Reactive Sputtering</span><span class="skill-tag">NbN Deposition</span><span class="skill-tag">Chalcogenides</span><span class="skill-tag">RTA</span>
+        </div>
+      </div>
+      <div class="skill-group reveal" style="transition-delay:.1s">
+        <div class="skill-group-icon">🔬</div>
+        <div class="skill-group-title">Micro/Nanofabrication</div>
+        <p style="font-size:.84rem;color:var(--muted);line-height:1.65">Photolithography (Heidelberg µPG 501), e-beam lithography, dose optimization, sub-50 nm patterning, RIE, and metal lift-off.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">Photolithography</span><span class="skill-tag">E-beam Lithography</span><span class="skill-tag">Sub-50 nm Patterning</span><span class="skill-tag">RIE</span><span class="skill-tag">Metal Lift-off</span><span class="skill-tag">Dose Optimization</span>
+        </div>
+      </div>
+      <div class="skill-group reveal" style="transition-delay:.2s">
+        <div class="skill-group-icon">📊</div>
+        <div class="skill-group-title">Metrology &amp; Characterization</div>
+        <p style="font-size:.84rem;color:var(--muted);line-height:1.65">Structural and electrical characterization to correlate process parameters with device performance and identify failure mechanisms.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">XRD</span><span class="skill-tag">XPS</span><span class="skill-tag">SEM</span><span class="skill-tag">FTIR</span><span class="skill-tag">Raman</span><span class="skill-tag">UV-Vis Spectroscopy</span><span class="skill-tag">Dektak Profilometry</span><span class="skill-tag">Hall Measurements</span><span class="skill-tag">TCR Extraction</span><span class="skill-tag">Cryogenics</span><span class="skill-tag">Electrical Characterization</span>
+        </div>
+      </div>
+      <div class="skill-group reveal" style="transition-delay:.3s">
+        <div class="skill-group-icon">💻</div>
+        <div class="skill-group-title">Data &amp; Layout Tools</div>
+        <p style="font-size:.84rem;color:var(--muted);line-height:1.65">Data analysis, visualization, and photomask design for fabrication workflows.</p>
+        <div class="skill-tags">
+          <span class="skill-tag">MATLAB</span><span class="skill-tag">Python</span><span class="skill-tag">KLayout</span><span class="skill-tag">CleWin</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PUBLICATIONS ── -->
+<section id="publications">
+  <div class="container">
+    <p class="section-label">Research Output</p>
+    <h2 class="section-title">Publications &amp; Patents</h2>
+    <div class="pub-list">
+
+      <div class="pub-item reveal">
+        <div class="pub-icon">📄</div>
+        <div class="pub-text">
+          <div class="pub-title">Advancements in Uncooled Bolometer Technology: Shortwave Infrared Detection via CuFeSe₂ Nanocrystal Colloidal Thin Films</div>
+          <div class="pub-venue">Physica Status Solidi (Rapid Research Letters)</div>
+          <div class="pub-year">2024 · A. Vishwakarma et al.</div>
+          <div class="pub-actions">
+            <a class="pub-doi" href="https://doi.org/10.1002/pssr.202300440" target="_blank" rel="noopener">🔗 DOI: 10.1002/pssr.202300440</a>
+            <button class="pub-detail-btn" onclick="openPubModal('pss')">📖 Abstract</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item reveal" style="transition-delay:.08s">
+        <div class="pub-icon">📄</div>
+        <div class="pub-text">
+          <div class="pub-title">Enhanced Short-Wave Infrared Detection Using Colloidal-Synthesized AgFeS₂ Nanocrystals</div>
+          <div class="pub-venue">CLEO–PR · IEEE</div>
+          <div class="pub-year">2024 · A. Vishwakarma et al.</div>
+          <div class="pub-actions">
+            <a class="pub-doi" href="https://doi.org/10.1109/CLEO-PR60912.2024.10676473" target="_blank" rel="noopener">🔗 DOI: 10.1109/CLEO-PR60912.2024.10676473</a>
+            <button class="pub-detail-btn" onclick="openPubModal('cleo')">📖 View Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item reveal" style="transition-delay:.16s">
+        <div class="pub-icon">📄</div>
+        <div class="pub-text">
+          <div class="pub-title">In-Situ Synthesized Ag₂Te Thin Films for Near-Infrared Photodetection</div>
+          <div class="pub-venue">OGC · IEEE</div>
+          <div class="pub-year">2025 · A. Vishwakarma et al.</div>
+          <div class="pub-actions">
+            <a class="pub-doi" href="https://doi.org/10.1109/OGC66041.2025.11262134" target="_blank" rel="noopener">🔗 DOI: 10.1109/OGC66041.2025.11262134</a>
+            <button class="pub-detail-btn" onclick="openPubModal('ogc')">📖 View Details</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item reveal" style="transition-delay:.24s">
+        <div class="pub-icon">🔒</div>
+        <div class="pub-text">
+          <div class="pub-title">Heterojunction Stacks for Optoelectronic Applications</div>
+          <div class="pub-venue">Indian Patent — Filed 2023 · Pending</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── EDUCATION ── -->
+<section id="education">
+  <div class="container">
+    <p class="section-label">Education</p>
+    <h2 class="section-title">Academic Background</h2>
+    <div class="edu-grid">
+
+      <div class="edu-card reveal">
+        <div class="edu-degree">Ph.D. — Nano Science &amp; Engineering</div>
+        <div class="edu-inst">Indian Institute of Science (IISc), Bengaluru</div>
+        <div class="edu-cgpa">CGPA: <strong>8.5 / 10</strong></div>
+        <button class="edu-courses-btn" onclick="toggleCourses(this)">
+          PhD Courses <span class="arrow">▾</span>
+        </button>
+        <div class="edu-courses-list">
+          <div class="edu-courses-inner">
+            <div class="edu-course-item">Semiconductor Devices and Integrated Circuit Technology</div>
+            <div class="edu-course-item">Advanced Micro- and Nanofabrication Technology and Process</div>
+            <div class="edu-course-item">Material Synthesis: Quantum Dots to Bulk Crystals</div>
+            <div class="edu-course-item">Semiconductor Devices and Circuits</div>
+            <div class="edu-course-item">Optoelectronic Devices</div>
+            <div class="edu-course-item">Fundamentals of MOS Analog Integrated Circuits</div>
+            <div class="edu-course-item">Electron Microscopy in Materials Characterization</div>
+            <div class="edu-course-item">Micro and Nano Characterization Methods</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="edu-card reveal" style="transition-delay:.1s">
+        <div class="edu-degree">B.E. — Electronics &amp; Telecommunication</div>
+        <div class="edu-inst">Chhattisgarh Swami Vivekanand Technical University</div>
+        <div class="edu-cgpa">CGPA: <strong>8.1 / 10</strong></div>
+        <button class="edu-courses-btn" onclick="toggleCourses(this)">
+          B.E. Courses <span class="arrow">▾</span>
+        </button>
+        <div class="edu-courses-list">
+          <div class="edu-courses-inner">
+            <div class="edu-course-item"><strong>Engineering Mathematics</strong> — Linear Algebra, Calculus, Differential Equations, Probability &amp; Statistics</div>
+            <div class="edu-course-item"><strong>Network Theory</strong> — Node/mesh analysis, network theorems, transient response, frequency domain analysis</div>
+            <div class="edu-course-item"><strong>Signals and Systems</strong> — Laplace, Fourier series/transform, Z-transform, sampling theorem, LTI systems</div>
+            <div class="edu-course-item"><strong>Electronic Devices (EDC)</strong> — Energy bands, carrier transport, P-N junction, Zener diode, BJT, MOSFET, IC fabrication</div>
+            <div class="edu-course-item"><strong>Analog Circuits</strong> — Small-signal analysis, amplifiers, Op-Amps, oscillators, power amplifiers</div>
+            <div class="edu-course-item"><strong>Digital Circuits</strong> — Boolean algebra, Karnaugh map, combinational &amp; sequential circuits, data converters</div>
+            <div class="edu-course-item"><strong>Control Systems</strong> — Feedback, root locus, Bode plot, Routh-Hurwitz criterion, state-space models</div>
+            <div class="edu-course-item"><strong>Communications</strong> — Amplitude/angle modulation, digital modulation, PCM, information theory</div>
+            <div class="edu-course-item"><strong>Electromagnetic Theory (EMT)</strong> — Maxwell's equations, wave propagation</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── PHOTOGRAPHY & CREATIVE WORK ── -->
+<section id="photography">
+  <div class="container">
+    <p class="section-label">Creative Work</p>
+    <h2 class="section-title">Photography &amp; Film</h2>
+    <p style="color:var(--muted);max-width:620px;margin-bottom:40px;margin-top:-36px;font-size:.95rem;line-height:1.75">
+      Beyond the lab — active in photography and movie making. Led IISc's 25-member photography team as Convener (2022–2024), covering campus events, portraits, and documentary short films.
+    </p>
+    <div class="photo-grid">
+      <div class="photo-item"><img src="images/photos/photo1.jpeg" alt="Photography" loading="lazy" /></div>
+      <div class="photo-item"><img src="images/photos/photo2.jpeg" alt="Photography" loading="lazy" /></div>
+      <div class="photo-item"><img src="images/photos/photo3.jpeg" alt="Photography" loading="lazy" /></div>
+      <div class="photo-item"><img src="images/photos/photo4.jpeg" alt="Photography" loading="lazy" /></div>
+      <div class="photo-item"><img src="images/photos/photo5.jpeg" alt="Photography" loading="lazy" /></div>
+      <div class="photo-item"><img src="images/photos/photo6.jpeg" alt="Photography" loading="lazy" /></div>
+      <div class="photo-item"><img src="images/photos/photo7.jpeg" alt="Photography" loading="lazy" /></div>
+      <div class="photo-item"><img src="images/photos/photo8.jpeg" alt="Photography" loading="lazy" /></div>
+      <div class="photo-item"><img src="images/photos/photo9.jpeg" alt="Photography" loading="lazy" /></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="container">
+    <p class="section-label">Get In Touch</p>
+    <h2 class="section-title">Contact</h2>
+    <div class="contact-wrapper">
+      <p>Open to research collaborations, industry opportunities in advanced semiconductor and photonics process engineering, and conversations about quantum sensing and infrared detector technology.</p>
+      <div class="contact-links">
+        <a class="contact-link" href="mailto:ashutoshv@iisc.ac.in"><div class="contact-link-icon">✉</div>ashutoshv@iisc.ac.in</a>
+        <a class="contact-link" href="tel:+919893839222"><div class="contact-link-icon">📞</div>+91-9893839222</a>
+        <div class="contact-link" style="cursor:default"><div class="contact-link-icon">📍</div>Bengaluru, India</div>
+        <a class="contact-link" href="https://www.iisc.ac.in" target="_blank" rel="noopener"><div class="contact-link-icon">🏛</div>CeNSE, Indian Institute of Science</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p>Designed &amp; built by <span>Ashutosh Vishwakarma</span> · CeNSE, IISc Bengaluru · 2025</p>
+</footer>
+
+<!-- ── PROJECT MODAL ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   Crystal Lattice Background Animation
+═══════════════════════════════════════════════ */
+(function () {
+  const canvas = document.getElementById('canvas-bg');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const S = 68, DX = S, DY = S * Math.sqrt(3) / 2;
+
+  class Carrier {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.row = Math.floor(Math.random() * (H / DY + 4)) - 2;
+      this.col = Math.floor(Math.random() * (W / DX + 4)) - 2;
+      this.progress = init ? Math.random() : 0;
+      this.dir = Math.floor(Math.random() * 6);
+      this.speed = 0.003 + Math.random() * 0.005;
+      this.alpha = 0.35 + Math.random() * 0.5;
+    }
+    nodePos(r, c) { return { x: c * DX + (r % 2 === 0 ? 0 : DX / 2), y: r * DY }; }
+    neighbor(r, c, d) {
+      const D = [[0,1],[1,1],[1,0],[0,-1],[-1,0],[-1,-1]];
+      return [r + D[d % 6][0], c + D[d % 6][1]];
+    }
+    update() {
+      this.progress += this.speed;
+      if (this.progress >= 1) {
+        this.progress = 0;
+        [this.row, this.col] = this.neighbor(this.row, this.col, this.dir);
+        this.dir = Math.floor(Math.random() * 6);
+        const p = this.nodePos(this.row, this.col);
+        if (p.x < -DX * 2 || p.x > W + DX * 2 || p.y < -DY * 2 || p.y > H + DY * 2) this.reset(false);
+      }
+    }
+    draw() {
+      const a = this.nodePos(this.row, this.col);
+      const [nr, nc] = this.neighbor(this.row, this.col, this.dir);
+      const b = this.nodePos(nr, nc);
+      const x = a.x + (b.x - a.x) * this.progress;
+      const y = a.y + (b.y - a.y) * this.progress;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, 9);
+      g.addColorStop(0, `rgba(47,93,232,${this.alpha})`);
+      g.addColorStop(1, 'rgba(47,93,232,0)');
+      ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2);
+      ctx.fillStyle = g; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(8,145,178,${this.alpha})`; ctx.fill();
+    }
+  }
+
+  const carriers = Array.from({ length: 24 }, () => new Carrier());
+
+  function frame(t) {
+    ctx.clearRect(0, 0, W, H);
+    const rows = Math.ceil(H / DY) + 4, cols = Math.ceil(W / DX) + 4;
+    const DIRS = [[0,1],[1,1],[1,0]];
+    ctx.lineWidth = 0.7;
+    for (let r = -2; r < rows; r++) {
+      for (let c = -2; c < cols; c++) {
+        const ax = c * DX + (r % 2 === 0 ? 0 : DX / 2), ay = r * DY;
+        for (const [dr, dc] of DIRS) {
+          const bx = (c + dc) * DX + ((r + dr) % 2 === 0 ? 0 : DX / 2), by = (r + dr) * DY;
+          ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by);
+          ctx.strokeStyle = 'rgba(47,93,232,0.08)'; ctx.stroke();
+        }
+      }
+    }
+    for (let r = -2; r < rows; r++) {
+      for (let c = -2; c < cols; c++) {
+        const x = c * DX + (r % 2 === 0 ? 0 : DX / 2), y = r * DY;
+        const pulse = Math.sin(t * 0.00115 + r * 0.75 + c * 0.55) * 0.22 + 0.78;
+        ctx.beginPath(); ctx.arc(x, y, (3.5 + 2) * pulse, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(47,93,232,${0.05 * pulse})`; ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, 3.5 * pulse, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(47,93,232,${0.2 * pulse})`; ctx.fill();
+      }
+    }
+    carriers.forEach(c => { c.update(); c.draw(); });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ═══════════════════════════════════════════════
+   Project Modal Data
+═══════════════════════════════════════════════ */
+const PROJECTS = {
+  snspd: {
+    tag: 'Quantum Sensing · Superconductivity',
+    title: 'SNSPD NbN Thin-Film Process Development',
+    period: 'Aug 2024 – Dec 2025',
+    images: ['images/projects/snspd.png'],
+    pills: ['Sputtering','Sub-50 nm EBL','RIE','SEM','XRD','Raman','XPS','Hall Measurement','Cryogenics','Electrical Characterization','Python'],
+    abstract: `We present a systematic switching-current statistics study connecting NbN film quality, nanowire geometry, and phase-slip barrier physics within a single quantitative framework. Thin films of cubic δ-NbN are grown by reactive DC magnetron sputtering on c-plane sapphire and patterned into 100 nm-wide meander (M100) and spiral (S100) nanowires. XRD, XPS, and TEM confirm near-stoichiometric, single-phase δ-NbN with Tc values ranging from ~8 K (disordered) to 14.6 K (optimised).
+
+Applying the Langer–Ambegaokar–McCumber–Halperin (LAMH) escape-rate formalism to temperature- and illumination-dependent switching distributions, we extract two device-level figures of merit: the thermal barrier-softening coefficient κ_T and the photon–barrier coupling coefficient κ_p. Film disorder raises κ_T from 1.55 to 4.05 — a factor-of-2.6 increase — reflecting accelerated erosion of the condensation-energy barrier as compositional non-uniformity steepens the Ic(T) curve.
+
+At fixed material quality, the spiral geometry yields κ_p = 15.1 versus κ_p = 6.4 for the meander — a factor-of-2.4 enhancement attributed to elimination of current-crowding-induced switching-site localization at 180° turns. SEM-derived line-edge roughness measurements demonstrate a direct correlation between roughness amplitude and switching-current distribution width. The orthogonality of κ_T (film-quality controlled) and κ_p (geometry controlled) defines a practical two-stage optimization strategy for SNSPDs: minimize disorder to reduce dark-count rate, then engineer nanowire layout to maximize photon sensitivity.`
+  },
+  sb2te3: {
+    tag: 'Optoelectronics · Heterojunctions',
+    title: 'Sb₂Te₃ Heterojunction Stack Process Integration',
+    period: 'Jan 2024 – Aug 2024',
+    images: ['images/projects/sb2te3_tio2.png','images/projects/sb2te3_mote2.png'],
+    pills: ['Sputtering','RIE','SEM','XRD','Raman','XPS','Hall Measurement','Electrical Characterization','Python'],
+    abstract: `Sb₂Te₃/TiO₂ Heterojunction: We report a self-powered broadband near-infrared photodetector using an Sb₂Te₃/TiO₂ heterojunction. The device leverages the built-in electric field at the heterojunction interface to achieve responsivity without external bias. Dark current is only 20 pA. Responsivity is 11.4 mA/W at zero bias, increasing to 7.8 A/W at 2 V applied bias. The detector shows broadband sensitivity from 400 to 1100 nm, making it useful for low-light and broadband optoelectronic applications.
+
+Sb₂Te₃/MoTe₂ Heterostructure: We report a vertical Sb₂Te₃/MoTe₂ heterostructure photodetector enabling broadband, self-powered operation. Spectral analysis confirms absorption till 1700 nm, with MoTe₂ active in the near-infrared and Sb₂Te₃ extending the response further. Under 730 nm illumination (232 W/cm²), the device exhibits a photocurrent of 10.02 μA and an estimated responsivity of 21.54 mA/W. Strong rectifying behavior, low dark current, and photovoltaic response validate the potential of this heterostructure for low-power, broadband photodetection in advanced optoelectronic applications.`
+  },
+  bolometer: {
+    tag: 'Infrared Sensing · Bolometry',
+    title: 'CuFeSe₂ Nanocrystal Bolometric Sensor',
+    period: '2021 – 2023',
+    images: ['images/projects/cufese2_bolometer.png'],
+    pills: ['TCR Extraction','FTIR','UV-Vis Spectroscopy','SEM','Raman','Dektak Profilometry'],
+    abstract: `Microbolometers have emerged as a cost-effective alternative to cooled infrared photon detectors, albeit with trade-offs in responsivity (Rλ), detectivity (D*), and response time. This study focuses on the optoelectronic and bolometric characteristics of CuFeSe₂ nanocrystals (NCs) in a colloidal solution. These NCs exhibit a significant change in resistivity (ρ) when subjected to temperature variations ranging from 170 K to 400 K.
+
+The Temperature Coefficient of Resistance (TCR, α) is 1.9%/K for a room temperature resistivity of 505 Ω·cm. The responsivity of CuFeSe₂ NCs is 0.101 A/W and the Hall mobility of the colloidal solution is 0.1 cm²/V/s. A comprehensive comparison was conducted between the performance metrics of established bolometer materials (VOx and a-Si) and colloidal CuFeSe₂ NCs. Based on the results, colloidal CuFeSe₂ NCs are a promising option for future uncooled bolometer technology, bridging the performance gap between cooled photon detectors and conventional microbolometers.`
+  },
+  cufese2opt: {
+    tag: 'SWIR Absorbers · Process Optimization',
+    title: 'CuFeSe₂ Thin-Film Process Optimization',
+    period: 'Dec 2022 – Jan 2023',
+    images: [],
+    pills: ['TCR Extraction','FTIR','UV-Vis Spectroscopy','SEM','Raman','Dektak Profilometry','XPS'],
+    abstract: `Developed DC sputtering recipes for CuFeSe₂ thin films with controlled stoichiometry and surface morphology targeting SWIR absorption. Systematic optimization of sputtering power, pressure, and gas ratios established process windows yielding films with reproducible electrical and optical properties.
+
+Post-deposition rapid thermal annealing was optimized across 100–400 °C to improve crystallinity (confirmed by XRD and Raman). Temperature-dependent electrical characterization tracked the evolution of the TCR and photoresponse as a function of annealing condition, providing a direct link between structural order and device-level performance. The process windows established here underpinned subsequent nanocrystal and heterostructure device work.`
+  }
+};
+
+/* ═══════════════════════════════════════════════
+   Publication Modal Data
+═══════════════════════════════════════════════ */
+const PUBS = {
+  pss: {
+    title: 'Advancements in Uncooled Bolometer Technology: Shortwave Infrared Detection via CuFeSe₂ Nanocrystal Colloidal Thin Films',
+    venue: 'Physica Status Solidi (RRL) · 2024',
+    doi: 'https://doi.org/10.1002/pssr.202300440',
+    doiText: '10.1002/pssr.202300440',
+    images: [],
+    abstract: `Microbolometers have emerged as a cost-effective alternative to cooled infrared photon detectors. This study reports on the optoelectronic and bolometric characteristics of CuFeSe₂ nanocrystals (NCs) in a colloidal solution, exhibiting a significant change in resistivity when subjected to temperature variations from 170 K to 400 K. TCR (α) = 1.9%/K for room temperature resistivity of 505 Ω·cm. Responsivity = 0.101 A/W; Hall mobility = 0.1 cm²/V/s. A comprehensive comparison with VOx and a-Si demonstrates that colloidal CuFeSe₂ NCs are a promising material for next-generation uncooled bolometer technology.`
+  },
+  cleo: {
+    title: 'Enhanced Short-Wave Infrared Detection Using Colloidal-Synthesized AgFeS₂ Nanocrystals',
+    venue: 'CLEO–PR · IEEE · 2024',
+    doi: 'https://doi.org/10.1109/CLEO-PR60912.2024.10676473',
+    doiText: '10.1109/CLEO-PR60912.2024.10676473',
+    images: ['images/publications/cleo1.jpeg','images/publications/cleo2.jpeg','images/publications/cleo3.jpeg'],
+    abstract: `We demonstrate enhanced short-wave infrared (SWIR) detection using colloidal-synthesized AgFeS₂ nanocrystals. Solution-processed thin films of AgFeS₂ exhibit broadband light absorption in the SWIR regime, enabling photodetection in a spectral range critical for gas sensing, biomedical imaging, and optical communications. The colloidal synthesis approach offers scalable, low-cost fabrication compared to epitaxial SWIR detectors.`
+  },
+  ogc: {
+    title: 'In-Situ Synthesized Ag₂Te Thin Films for Near-Infrared Photodetection',
+    venue: 'OGC · IEEE · 2025',
+    doi: 'https://doi.org/10.1109/OGC66041.2025.11262134',
+    doiText: '10.1109/OGC66041.2025.11262134',
+    images: ['images/publications/ogc.png'],
+    abstract: `We present in-situ synthesized Ag₂Te thin films as an active material for near-infrared photodetection. The films are deposited and characterized for their optical absorption edge and photosensitive behavior in the NIR regime. The in-situ synthesis approach enables direct integration with device substrates, simplifying fabrication. Results demonstrate the feasibility of Ag₂Te-based detectors for broadband near-infrared sensing applications.`
+  }
+};
+
+/* ═══════════════════════════════════════════════
+   Modal Logic
+═══════════════════════════════════════════════ */
+function openProjectModal(id) {
+  const d = PROJECTS[id]; if (!d) return;
+  const imgHtml = d.images.length
+    ? `<div class="modal-section-label">Project Images</div>
+       <div class="modal-img-grid">${d.images.map(s => `<img class="modal-img" src="${s}" alt="${d.title}" onerror="this.style.display='none'" />`).join('')}</div>`
+    : '';
+  const pillsHtml = d.pills.map(p => `<span class="pill">${p}</span>`).join('');
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-tag">${d.tag}</div>
+    <div class="modal-title">${d.title}</div>
+    <div class="modal-date">📅 ${d.period}</div>
+    ${imgHtml}
+    <div class="modal-section-label" style="margin-top:24px">Abstract</div>
+    <div class="modal-abstract">${d.abstract.replace(/\n\n/g,'<br><br>')}</div>
+    <div class="modal-section-label">Tools &amp; Methods</div>
+    <div class="modal-pills">${pillsHtml}</div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function openPubModal(id) {
+  const d = PUBS[id]; if (!d) return;
+  const imgHtml = d.images.length
+    ? `<div class="modal-section-label">Conference Images</div>
+       <div class="modal-img-grid">${d.images.map(s => `<img class="modal-img" src="${s}" alt="${d.title}" onerror="this.style.display='none'" />`).join('')}</div>`
+    : '';
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-tag">Publication</div>
+    <div class="modal-title" style="font-style:italic">${d.title}</div>
+    <div class="modal-date" style="color:var(--accent2);font-weight:600">${d.venue}</div>
+    <a class="modal-doi-link" href="${d.doi}" target="_blank" rel="noopener">🔗 DOI: ${d.doiText}</a>
+    ${imgHtml}
+    <div class="modal-section-label" style="margin-top:24px">Abstract</div>
+    <div class="modal-abstract">${d.abstract}</div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ═══════════════════════════════════════════════
+   Education Course Toggle
+═══════════════════════════════════════════════ */
+function toggleCourses(btn) {
+  const list = btn.nextElementSibling;
+  const isOpen = list.classList.contains('open');
+  list.classList.toggle('open', !isOpen);
+  btn.classList.toggle('open', !isOpen);
+}
+
+/* ═══════════════════════════════════════════════
+   Nav & UI
+═══════════════════════════════════════════════ */
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+  let cur = '';
+  document.querySelectorAll('section[id]').forEach(s => { if (window.scrollY >= s.offsetTop - 120) cur = s.id; });
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    const active = a.getAttribute('href') === '#' + cur;
+    a.style.color = active ? 'var(--accent)' : '';
+    a.style.fontWeight = active ? '700' : '';
+  });
+});
+
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.toggle('open');
+});
+document.querySelectorAll('#mobile-menu a').forEach(a =>
+  a.addEventListener('click', () => document.getElementById('mobile-menu').classList.remove('open'))
+);
+
+/* ═══════════════════════════════════════════════
+   Counter Animation
+═══════════════════════════════════════════════ */
+function animateCounters() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const target = +el.dataset.target;
+    const suffix = target >= 10 ? '+' : '';
+    let start = null;
+    const step = ts => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / 1400, 1);
+      el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   Scroll Reveal
+═══════════════════════════════════════════════ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+const counterIO = new IntersectionObserver(([e]) => {
+  if (e.isIntersecting) { animateCounters(); counterIO.disconnect(); }
+}, { threshold: 0.5 });
+const statsEl = document.querySelector('.hero-stats');
+if (statsEl) counterIO.observe(statsEl);
+</script>
+</body>
+</html>
