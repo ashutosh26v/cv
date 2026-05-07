@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Research Projects — Ashutosh Vishwakarma</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:      #f4f7ff;
+    --bg2:     #ffffff;
+    --accent:  #2f5de8;
+    --accent2: #0891b2;
+    --text:    #0d1b3e;
+    --muted:   #5a6a8a;
+    --border:  rgba(47,93,232,0.14);
+    --card:    #ffffff;
+    --shadow:  0 2px 20px rgba(47,93,232,0.09);
+    --glow:    0 4px 32px rgba(47,93,232,0.18);
+    --radius:  14px;
+    --font:    'Inter', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.65; overflow-x: hidden; }
+  a { color: var(--accent); text-decoration: none; transition: color .2s; }
+  a:hover { color: var(--accent2); }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  #canvas-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .45; }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+  /* ── NAV ── */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; backdrop-filter: blur(20px) saturate(200%); background: rgba(244,247,255,.9); border-bottom: 1px solid var(--border); transition: box-shadow .3s; }
+  nav.scrolled { box-shadow: 0 2px 24px rgba(47,93,232,.1); }
+  .nav-inner { max-width: 1060px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 62px; }
+  .nav-logo { font-weight: 900; font-size: 1.05rem; background: linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .nav-links { display: flex; gap: 26px; list-style: none; }
+  .nav-links a { font-size: .87rem; font-weight: 500; color: var(--muted); letter-spacing: .03em; transition: color .2s, font-weight .15s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a.active { color: var(--accent); font-weight: 700; }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+  .mobile-menu { display: none; flex-direction: column; background: var(--bg2); border-top: 1px solid var(--border); padding: 16px 24px; }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a { padding: 10px 0; font-size: .95rem; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .mobile-menu a:last-child { border-bottom: none; }
+
+  /* ── PAGE HEADER ── */
+  .page-header { padding: 110px 0 52px; background: var(--bg2); border-bottom: 1.5px solid var(--border); }
+  .breadcrumb { font-size: .79rem; color: var(--muted); margin-bottom: 18px; display: flex; align-items: center; gap: 6px; }
+  .breadcrumb a { color: var(--muted); }
+  .breadcrumb a:hover { color: var(--accent); }
+  .page-label { font-size: .76rem; letter-spacing: .15em; text-transform: uppercase; color: var(--accent2); margin-bottom: 8px; font-weight: 700; }
+  .page-title { font-size: clamp(1.9rem,4vw,2.8rem); font-weight: 900; margin-bottom: 14px; background: linear-gradient(120deg,var(--text) 55%,var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; }
+  .page-sub { font-size: .96rem; color: var(--muted); max-width: 580px; line-height: 1.75; }
+
+  /* ── PROJECT ITEMS ── */
+  .projects-list { padding: 8px 0 96px; }
+
+  .proj-item { display: grid; grid-template-columns: 56px 1fr; gap: 36px; padding: 56px 0; border-bottom: 1.5px solid var(--border); }
+  .proj-item:last-child { border-bottom: none; }
+
+  .proj-num { font-size: 2.4rem; font-weight: 900; color: rgba(47,93,232,.1); line-height: 1; padding-top: 12px; text-align: right; letter-spacing: -.03em; }
+
+  .proj-meta-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .proj-tag { font-size: .71rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--accent2); }
+  .proj-date { font-size: .77rem; color: var(--muted); padding: 4px 12px; border-radius: 99px; border: 1px solid var(--border); background: var(--bg); }
+
+  .proj-title { font-size: 1.42rem; font-weight: 800; color: var(--text); margin-bottom: 10px; line-height: 1.25; }
+  .proj-divider { width: 36px; height: 2px; background: linear-gradient(90deg,var(--accent),var(--accent2)); border-radius: 2px; margin-bottom: 18px; }
+  .proj-summary { font-size: .91rem; color: var(--muted); margin-bottom: 24px; line-height: 1.74; max-width: 680px; }
+
+  .proj-bullets { list-style: none; display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; }
+  .proj-bullets li { display: flex; align-items: flex-start; gap: 13px; font-size: .9rem; color: var(--text); line-height: 1.62; }
+  .proj-bullet-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); margin-top: 8px; flex-shrink: 0; }
+
+  .proj-footer { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .proj-tools-label { font-size: .71rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .proj-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { font-size: .72rem; padding: 4px 11px; border-radius: 99px; background: rgba(47,93,232,.07); border: 1px solid rgba(47,93,232,.18); color: var(--accent); font-weight: 500; }
+
+  .proj-explore-btn { display: inline-flex; align-items: center; gap: 8px; font-size: .84rem; font-weight: 700; color: var(--accent); background: rgba(47,93,232,.06); border: 1.5px solid rgba(47,93,232,.2); padding: 9px 20px; border-radius: 99px; cursor: pointer; white-space: nowrap; flex-shrink: 0; margin-top: 28px; transition: background .2s, transform .2s, box-shadow .2s; }
+  .proj-explore-btn:hover { background: rgba(47,93,232,.13); transform: translateX(3px); box-shadow: 0 2px 14px rgba(47,93,232,.15); }
+
+  /* ── MODAL ── */
+  .modal-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(13,27,62,.52); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 24px; overflow-y: auto; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: var(--bg2); border-radius: 20px; border: 1.5px solid var(--border); box-shadow: 0 24px 80px rgba(47,93,232,.22); max-width: 780px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; padding: 40px; margin: auto; }
+  .modal-close { position: sticky; top: 0; float: right; margin-bottom: 8px; margin-left: 8px; width: 34px; height: 34px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--border); font-size: 1.15rem; cursor: pointer; color: var(--text); display: flex; align-items: center; justify-content: center; transition: background .2s; z-index: 1; }
+  .modal-close:hover { background: rgba(47,93,232,.1); }
+  .modal-tag { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent2); margin-bottom: 8px; }
+  .modal-title { font-size: 1.3rem; font-weight: 800; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+  .modal-date { font-size: .8rem; color: var(--muted); margin-bottom: 4px; }
+  .modal-section-label { font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; margin-top: 22px; }
+  .modal-abstract { font-size: .9rem; color: var(--muted); line-height: 1.78; background: var(--bg); border-radius: 10px; padding: 18px 20px; border: 1px solid var(--border); }
+  .modal-img-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 12px; margin-top: 12px; }
+  .modal-img { width: 100%; border-radius: 10px; object-fit: contain; border: 1.5px solid var(--border); background: var(--bg); max-height: 300px; }
+  .modal-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+
+  /* ── FOOTER ── */
+  footer { text-align: center; padding: 32px 24px; border-top: 1.5px solid var(--border); font-size: .82rem; color: var(--muted); position: relative; z-index: 1; background: var(--bg2); }
+  footer span { color: var(--accent2); font-weight: 600; }
+
+  /* ── REVEAL ── */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .65s ease, transform .65s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .proj-item { grid-template-columns: 1fr; gap: 0; }
+    .proj-num { display: none; }
+    .modal-box { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">AV</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="index.html#skills">Skills</a></li>
+      <li><a href="index.html#publications">Publications</a></li>
+      <li><a href="index.html#education">Education</a></li>
+      <li><a href="index.html#photography">Creative</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#experience">Experience</a>
+    <a href="projects.html">Projects</a>
+    <a href="index.html#skills">Skills</a>
+    <a href="index.html#publications">Publications</a>
+    <a href="index.html#education">Education</a>
+    <a href="index.html#photography">Creative</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span style="opacity:.4">›</span>
+      <span>Research Projects</span>
+    </div>
+    <p class="page-label">Research Portfolio</p>
+    <h1 class="page-title">Key Projects</h1>
+    <p class="page-sub">Cleanroom process engineering, thin-film deposition, and semiconductor device characterization — spanning superconducting detectors, infrared photodetectors, and uncooled bolometric sensors.</p>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<main>
+  <div class="container">
+    <div class="projects-list">
+
+      <!-- 01 ─ SNSPD -->
+      <div class="proj-item reveal" id="snspd">
+        <div class="proj-num">01</div>
+        <div>
+          <div class="proj-meta-row">
+            <span class="proj-tag">Quantum Sensing · Superconductivity</span>
+            <span class="proj-date">2024 – 2026</span>
+          </div>
+          <h2 class="proj-title">SNSPD NbN Thin-Film Process Development</h2>
+          <div class="proj-divider"></div>
+          <p class="proj-summary">Reactive sputtering process development for ultra-thin NbN superconducting films, patterned into sub-50 nm meander and spiral nanowires for single-photon detection at cryogenic temperatures.</p>
+          <ul class="proj-bullets">
+            <li><span class="proj-bullet-dot"></span><span>Improved NbN superconducting device T<sub>c</sub> from 2.6 K to ~14.5 K through reactive sputtering optimization.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Established lithography and RIE process windows for sub-50 nm superconducting nanowires.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Correlated sputtering conditions, stoichiometry, and disorder with superconducting device performance.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Analyzed switching-current statistics and electrical response of meander and spiral SNSPD geometries.</span></li>
+          </ul>
+          <div class="proj-footer">
+            <div>
+              <div class="proj-tools-label">Tools &amp; Methods</div>
+              <div class="proj-pills">
+                <span class="pill">Reactive Sputtering</span><span class="pill">E-beam Lithography</span><span class="pill">RIE</span><span class="pill">SEM</span><span class="pill">XRD</span><span class="pill">Raman</span><span class="pill">XPS</span><span class="pill">Hall Measurement</span><span class="pill">Cryogenics</span><span class="pill">Electrical Characterization</span><span class="pill">Python</span>
+              </div>
+            </div>
+            <button class="proj-explore-btn" onclick="openProjectModal('snspd')">Full Details &#8594;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 ─ Sb2Te3 -->
+      <div class="proj-item reveal" style="transition-delay:.1s" id="sb2te3">
+        <div class="proj-num">02</div>
+        <div>
+          <div class="proj-meta-row">
+            <span class="proj-tag">Optoelectronics · Heterojunctions</span>
+            <span class="proj-date">2024 – 2026</span>
+          </div>
+          <h2 class="proj-title">Sb₂Te₃ Heterojunction Photodetectors</h2>
+          <div class="proj-divider"></div>
+          <p class="proj-summary">Interface-engineered Sb₂Te₃/TiO₂ and Sb₂Te₃/TMDC thin-film stacks enabling self-powered, broadband photodetection from visible to short-wave infrared (400–1700 nm).</p>
+          <ul class="proj-bullets">
+            <li><span class="proj-bullet-dot"></span><span>Integrated Sb₂Te₃/TiO₂ and Sb₂Te₃/TMDC heterostructures for broadband photodetection.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Achieved broadband photoresponse from 400 nm to 1700 nm through interface-engineered thin-film stacks.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Improved interface quality and reduced dark current through sputtering and annealing optimization.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Performed structural, electrical, and optoelectronic characterization of heterojunction devices.</span></li>
+          </ul>
+          <div class="proj-footer">
+            <div>
+              <div class="proj-tools-label">Tools &amp; Methods</div>
+              <div class="proj-pills">
+                <span class="pill">Sputtering</span><span class="pill">RIE</span><span class="pill">SEM</span><span class="pill">XRD</span><span class="pill">Raman</span><span class="pill">XPS</span><span class="pill">Hall Measurement</span><span class="pill">Electrical Characterization</span><span class="pill">Python</span>
+              </div>
+            </div>
+            <button class="proj-explore-btn" onclick="openProjectModal('sb2te3')">Full Details &#8594;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 ─ CuFeSe2 thin film -->
+      <div class="proj-item reveal" style="transition-delay:.2s" id="cufese2thin">
+        <div class="proj-num">03</div>
+        <div>
+          <div class="proj-meta-row">
+            <span class="proj-tag">Thermal Sensing · Thin-Film Bolometry</span>
+            <span class="proj-date">Dec 2022 – Jan 2023</span>
+          </div>
+          <h2 class="proj-title">CuFeSe₂ Thin-Film Bolometric Devices</h2>
+          <div class="proj-divider"></div>
+          <p class="proj-summary">Sputtered CuFeSe₂ thin-film process development for uncooled infrared bolometric sensing, with thermal isolation engineering for improved device response speed.</p>
+          <ul class="proj-bullets">
+            <li><span class="proj-bullet-dot"></span><span>Optimized sputtered CuFeSe₂ thin-film growth through deposition-temperature engineering.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Correlated structural evolution with thermally activated transport and bolometric device performance.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Achieved ~3% K⁻¹ negative TCR near room temperature for infrared bolometric sensing.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Reduced thermal time constant from 12.18 s to 7.90 s through backside silicon removal and thermal isolation engineering.</span></li>
+          </ul>
+          <div class="proj-footer">
+            <div>
+              <div class="proj-tools-label">Tools &amp; Methods</div>
+              <div class="proj-pills">
+                <span class="pill">DC Sputtering</span><span class="pill">RTA</span><span class="pill">XRD</span><span class="pill">Raman</span><span class="pill">FTIR</span><span class="pill">SEM</span><span class="pill">UV-Vis Spectroscopy</span><span class="pill">Dektak Profilometry</span><span class="pill">TCR Extraction</span><span class="pill">XPS</span>
+              </div>
+            </div>
+            <button class="proj-explore-btn" onclick="openProjectModal('cufese2thin')">Full Details &#8594;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 ─ CuFeSe2 nanocrystal -->
+      <div class="proj-item reveal" style="transition-delay:.3s" id="bolometer">
+        <div class="proj-num">04</div>
+        <div>
+          <div class="proj-meta-row">
+            <span class="proj-tag">Infrared Sensing · Nanocrystal Devices</span>
+            <span class="proj-date">2021 – 2023</span>
+          </div>
+          <h2 class="proj-title">CuFeSe₂ Nanocrystal Bolometric Devices</h2>
+          <div class="proj-divider"></div>
+          <p class="proj-summary">Solution-processed CuFeSe₂ nanocrystal thin films for uncooled bolometric sensing, demonstrating TCR performance competitive with commercial VOx architectures.</p>
+          <ul class="proj-bullets">
+            <li><span class="proj-bullet-dot"></span><span>Developed solution-processed CuFeSe₂ nanocrystal thin films with controlled thickness and film uniformity.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Correlated nanocrystal film processing conditions with temperature-dependent electrical transport behavior.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Established electrical characterization workflows for extraction of bolometric response and TCR.</span></li>
+            <li><span class="proj-bullet-dot"></span><span>Demonstrated infrared-induced bolometric response comparable to conventional uncooled thermal sensing architectures.</span></li>
+          </ul>
+          <div class="proj-footer">
+            <div>
+              <div class="proj-tools-label">Tools &amp; Methods</div>
+              <div class="proj-pills">
+                <span class="pill">Solution Processing</span><span class="pill">FTIR</span><span class="pill">UV-Vis Spectroscopy</span><span class="pill">SEM</span><span class="pill">Raman</span><span class="pill">Dektak Profilometry</span><span class="pill">TCR Extraction</span>
+              </div>
+            </div>
+            <button class="proj-explore-btn" onclick="openProjectModal('bolometer')">Full Details &#8594;</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p>Designed &amp; built by <span>Ashutosh Vishwakarma</span> · CeNSE, IISc Bengaluru · 2025</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+/* ── Crystal Lattice Animation ── */
+(function () {
+  const canvas = document.getElementById('canvas-bg'), ctx = canvas.getContext('2d');
+  let W, H;
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize); resize();
+  const DX = 68, DY = 68 * Math.sqrt(3) / 2;
+  class Carrier {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.row = Math.floor(Math.random() * (H / DY + 4)) - 2;
+      this.col = Math.floor(Math.random() * (W / DX + 4)) - 2;
+      this.progress = init ? Math.random() : 0;
+      this.dir = Math.floor(Math.random() * 6);
+      this.speed = 0.003 + Math.random() * 0.005;
+      this.alpha = 0.35 + Math.random() * 0.45;
+    }
+    node(r, c) { return { x: c * DX + (r % 2 === 0 ? 0 : DX / 2), y: r * DY }; }
+    nbr(r, c, d) { const D = [[0,1],[1,1],[1,0],[0,-1],[-1,0],[-1,-1]]; return [r + D[d%6][0], c + D[d%6][1]]; }
+    update() {
+      this.progress += this.speed;
+      if (this.progress >= 1) {
+        this.progress = 0; [this.row, this.col] = this.nbr(this.row, this.col, this.dir); this.dir = Math.floor(Math.random()*6);
+        const p = this.node(this.row, this.col);
+        if (p.x < -DX*2 || p.x > W+DX*2 || p.y < -DY*2 || p.y > H+DY*2) this.reset(false);
+      }
+    }
+    draw() {
+      const a = this.node(this.row, this.col), [nr, nc] = this.nbr(this.row, this.col, this.dir), b = this.node(nr, nc);
+      const x = a.x + (b.x-a.x)*this.progress, y = a.y + (b.y-a.y)*this.progress;
+      const g = ctx.createRadialGradient(x,y,0,x,y,8); g.addColorStop(0,`rgba(47,93,232,${this.alpha})`); g.addColorStop(1,'rgba(47,93,232,0)');
+      ctx.beginPath(); ctx.arc(x,y,8,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+      ctx.beginPath(); ctx.arc(x,y,2,0,Math.PI*2); ctx.fillStyle=`rgba(8,145,178,${this.alpha})`; ctx.fill();
+    }
+  }
+  const carriers = Array.from({length:22}, () => new Carrier());
+  function frame(t) {
+    ctx.clearRect(0,0,W,H);
+    const rows=Math.ceil(H/DY)+4, cols=Math.ceil(W/DX)+4;
+    ctx.lineWidth = 0.7;
+    for (let r=-2;r<rows;r++) for (let c=-2;c<cols;c++) {
+      const ax=c*DX+(r%2===0?0:DX/2), ay=r*DY;
+      for (const [dr,dc] of [[0,1],[1,1],[1,0]]) {
+        const bx=(c+dc)*DX+((r+dr)%2===0?0:DX/2), by=(r+dr)*DY;
+        ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.strokeStyle='rgba(47,93,232,0.07)'; ctx.stroke();
+      }
+    }
+    for (let r=-2;r<rows;r++) for (let c=-2;c<cols;c++) {
+      const x=c*DX+(r%2===0?0:DX/2), y=r*DY, p=Math.sin(t*0.0011+r*0.75+c*0.55)*0.2+0.8;
+      ctx.beginPath(); ctx.arc(x,y,3.5*p,0,Math.PI*2); ctx.fillStyle=`rgba(47,93,232,${0.18*p})`; ctx.fill();
+    }
+    carriers.forEach(c=>{c.update();c.draw();}); requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ── Modal Data ── */
+const PROJECTS = {
+  snspd: {
+    tag: 'Quantum Sensing · Superconductivity', title: 'SNSPD NbN Thin-Film Process Development', period: '2024 – 2026',
+    images: ['images/projects/snspd.png'],
+    pills: ['Reactive Sputtering','E-beam Lithography','RIE','SEM','XRD','Raman','XPS','Hall Measurement','Cryogenics','Electrical Characterization','Python'],
+    abstract: `This work covers the development of reactive DC sputtering processes for ultra-thin NbN superconducting films and their integration into superconducting nanowire single-photon detector (SNSPD) devices. Research spans sputtering process optimization for improved superconducting properties, electron-beam lithography and reactive ion etching for sub-50 nm nanowire patterning, and cryogenic electrical characterization of SNSPD device geometries.\n\nThe study establishes correlations between film growth conditions, structural quality, and superconducting device performance, with the goal of identifying reliable process windows for reproducible SNSPD fabrication. Details will be available upon publication.`
+  },
+  sb2te3: {
+    tag: 'Optoelectronics · Heterojunctions', title: 'Sb₂Te₃ Heterojunction Photodetectors', period: '2024 – 2026',
+    images: ['images/projects/sb2te3_tio2.png','images/projects/sb2te3_mote2.png'],
+    pills: ['Sputtering','RIE','SEM','XRD','Raman','XPS','Hall Measurement','Electrical Characterization','Python'],
+    abstract: `This work covers the integration of Sb₂Te₃-based heterojunction thin-film stacks — including Sb₂Te₃/TiO₂ and Sb₂Te₃/TMDC configurations — for broadband infrared photodetection. Research encompasses sputtering process development for multilayer thin-film deposition, interface engineering through annealing optimization, and structural and optoelectronic device characterization across the visible to short-wave infrared spectral range.\n\nThe study focuses on correlating thin-film processing conditions with heterojunction interface quality and photodetector device performance. Details will be available upon publication.`
+  },
+  cufese2thin: {
+    tag: 'Thermal Sensing · Thin-Film Bolometry', title: 'CuFeSe₂ Thin-Film Bolometric Devices', period: 'Dec 2022 – Jan 2023',
+    images: [],
+    pills: ['DC Sputtering','RTA','XRD','Raman','FTIR','SEM','UV-Vis Spectroscopy','Dektak Profilometry','TCR Extraction','XPS'],
+    abstract: `This work presents sputtered CuFeSe₂ thin-film process development targeting infrared bolometric sensing applications. Research covers deposition parameter optimization for controlled stoichiometry and surface morphology, post-deposition annealing for crystallinity improvement, and temperature-dependent electrical characterization for bolometric performance evaluation.\n\nThe study establishes relationships between processing conditions, structural evolution, and bolometric device response, providing a framework for process-to-performance optimization in thin-film infrared sensing materials. Details will be available upon publication.`
+  },
+  bolometer: {
+    tag: 'Infrared Sensing · Nanocrystal Devices', title: 'CuFeSe₂ Nanocrystal Bolometric Devices', period: '2021 – 2023',
+    images: ['images/projects/cufese2_bolometer.png'],
+    pills: ['Solution Processing','FTIR','UV-Vis Spectroscopy','SEM','Raman','Dektak Profilometry','TCR Extraction'],
+    abstract: `Published: Physica Status Solidi (RRL), 2024. DOI: 10.1002/pssr.202300440\n\nMicrobolometers have emerged as a cost-effective alternative to cooled infrared photon detectors, with trade-offs in responsivity (Rλ), detectivity (D*), and response time. This study focuses on the optoelectronic and bolometric characteristics of CuFeSe₂ nanocrystals (NCs) in a colloidal solution. These NCs exhibit significant resistivity change from 170 K to 400 K. TCR (α) = 1.9%/K at room temperature with resistivity 505 Ω·cm. Responsivity = 0.101 A/W; Hall mobility = 0.1 cm²/V/s.\n\nA comprehensive comparison with VOx and a-Si shows that colloidal CuFeSe₂ NCs are a promising option for next-generation uncooled bolometer technology, bridging the performance gap between cooled photon detectors and conventional microbolometers.`
+  }
+};
+
+function openProjectModal(id) {
+  const d = PROJECTS[id]; if (!d) return;
+  const imgHtml = d.images.length ? `<div class="modal-section-label">Project Images</div><div class="modal-img-grid">${d.images.map(s=>`<img class="modal-img" src="${s}" alt="" onerror="this.style.display='none'">`).join('')}</div>` : '';
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-tag">${d.tag}</div>
+    <div class="modal-title">${d.title}</div>
+    <div class="modal-date">📅 ${d.period}</div>
+    ${imgHtml}
+    <div class="modal-section-label" style="margin-top:22px">Abstract</div>
+    <div class="modal-abstract">${d.abstract.replace(/\n\n/g,'<br><br>')}</div>
+    <div class="modal-section-label">Tools &amp; Methods</div>
+    <div class="modal-pills">${d.pills.map(p=>`<span class="pill">${p}</span>`).join('')}</div>`;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow = ''; }
+function handleOverlayClick(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ── Nav & Reveal ── */
+window.addEventListener('scroll', () => document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20));
+document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobile-menu').classList.toggle('open'));
+document.querySelectorAll('#mobile-menu a').forEach(a => a.addEventListener('click', () => document.getElementById('mobile-menu').classList.remove('open')));
+const io = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
