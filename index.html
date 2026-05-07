@@ -101,31 +101,34 @@
   .tl-bullets li { font-size: .88rem; color: var(--muted); padding: 4px 0 4px 18px; position: relative; }
   .tl-bullets li::before { content: '▸'; position: absolute; left: 0; color: var(--accent2); font-size: .75rem; top: 5px; }
 
-  /* PROJECTS — 2×2 */
+  /* PROJECTS — teaser list */
   #projects { background: var(--bg2); }
-  .projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  .project-card { padding: 26px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--card); box-shadow: var(--shadow); transition: border-color .3s,transform .3s,box-shadow .3s; display: flex; flex-direction: column; cursor: pointer; }
-  .project-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 12px 40px rgba(47,93,232,.15); }
-  .project-tag { font-size: .71rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; color: var(--accent2); margin-bottom: 10px; }
-  .project-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; color: var(--text); }
-  .project-desc { font-size: .86rem; color: var(--muted); flex: 1; line-height: 1.68; }
-  .project-explore { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; font-size: .8rem; font-weight: 700; color: var(--accent); border-top: 1px solid var(--border); padding-top: 14px; }
-  .project-explore svg { transition: transform .2s; }
-  .project-card:hover .project-explore svg { transform: translateX(4px); }
-  .project-date { font-size: .78rem; color: var(--muted); font-weight: 500; }
-  .project-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .proj-teaser-list { display: flex; flex-direction: column; border-top: 1.5px solid var(--border); }
+  .proj-teaser-item { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px; border-bottom: 1px solid var(--border); color: var(--text); border-radius: 10px; gap: 16px; transition: background .2s, box-shadow .2s; }
+  .proj-teaser-item:hover { background: var(--bg); box-shadow: var(--shadow); }
+  .proj-teaser-left { display: flex; align-items: center; gap: 20px; }
+  .proj-teaser-num { font-size: 1.1rem; font-weight: 900; color: rgba(47,93,232,.15); min-width: 28px; }
+  .proj-teaser-tag { font-size: .71rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent2); margin-bottom: 4px; }
+  .proj-teaser-title { font-size: .95rem; font-weight: 700; color: var(--text); }
+  .proj-teaser-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .proj-teaser-date { font-size: .77rem; color: var(--muted); display: none; }
+  .proj-teaser-arrow { font-size: 1rem; color: var(--accent); transition: transform .2s; }
+  .proj-teaser-item:hover .proj-teaser-arrow { transform: translateX(5px); }
+  @media (min-width: 600px) { .proj-teaser-date { display: inline; } }
   .pill { font-size: .71rem; padding: 3px 10px; border-radius: 99px; background: rgba(47,93,232,.07); border: 1px solid rgba(47,93,232,.18); color: var(--accent); font-weight: 500; }
 
-  /* SKILLS — 2×2 */
+  /* SKILLS — single-column stacked */
   #skills { background: var(--bg); }
-  .skills-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  .skill-group { padding: 26px; border-radius: var(--radius); border: 1.5px solid var(--border); background: var(--card); box-shadow: var(--shadow); transition: border-color .3s,box-shadow .3s; }
-  .skill-group:hover { border-color: var(--accent2); box-shadow: 0 4px 28px rgba(8,145,178,.14); }
-  .skill-group-icon { font-size: 1.6rem; margin-bottom: 12px; }
-  .skill-group-title { font-weight: 700; font-size: .95rem; margin-bottom: 8px; color: var(--text); }
-  .skill-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
-  .skill-tag { font-size: .76rem; padding: 4px 11px; border-radius: 99px; border: 1px solid var(--border); color: var(--muted); background: var(--bg); transition: border-color .2s,color .2s; }
+  .skills-stack { display: flex; flex-direction: column; }
+  .skill-row { display: flex; align-items: flex-start; gap: 40px; padding: 28px 0; border-bottom: 1px solid var(--border); }
+  .skill-row:last-child { border-bottom: none; }
+  .skill-row-header { min-width: 230px; flex-shrink: 0; display: flex; align-items: flex-start; gap: 10px; padding-top: 3px; }
+  .skill-row-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .skill-row-title { font-size: .87rem; font-weight: 700; color: var(--text); line-height: 1.35; }
+  .skill-row-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tag { font-size: .79rem; padding: 5px 13px; border-radius: 99px; border: 1px solid var(--border); color: var(--muted); background: var(--card); transition: border-color .2s,color .2s; }
   .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+  @media (max-width: 640px) { .skill-row { flex-direction: column; gap: 12px; } .skill-row-header { min-width: unset; } }
 
   /* PUBLICATIONS */
   #publications { background: var(--bg2); }
@@ -208,7 +211,7 @@
     .nav-links { display: none; }
     .hamburger { display: flex; }
     .about-grid,.edu-grid { grid-template-columns: 1fr; }
-    .projects-grid,.skills-wrapper { grid-template-columns: 1fr; }
+    .skill-row { flex-direction: column; gap: 12px; }
     .photo-grid { grid-template-columns: repeat(2,1fr); }
     .hero-stats { gap: 24px; }
     section { padding: 72px 0; }
@@ -228,7 +231,7 @@
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#experience">Experience</a></li>
-      <li><a href="#projects">Projects</a></li>
+      <li><a href="projects.html">Projects</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#publications">Publications</a></li>
       <li><a href="#education">Education</a></li>
@@ -238,7 +241,7 @@
     <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
   <div class="mobile-menu" id="mobile-menu">
-    <a href="#about">About</a><a href="#experience">Experience</a><a href="#projects">Projects</a>
+    <a href="#about">About</a><a href="#experience">Experience</a><a href="projects.html">Projects</a>
     <a href="#skills">Skills</a><a href="#publications">Publications</a>
     <a href="#education">Education</a><a href="#photography">Creative</a><a href="#contact">Contact</a>
   </div>
@@ -249,16 +252,16 @@
   <div class="container">
     <div class="hero-tag">Doctoral Researcher · IISc Bengaluru</div>
     <h1><span class="line1">Ashutosh</span><span class="line2">Vishwakarma</span></h1>
-    <p class="hero-sub">Thin-film process engineer and nanofabricator working at the intersection of quantum sensing, photonics, and materials science. Building next-generation superconducting detectors and infrared photosensors from the cleanroom up.</p>
+    <p class="hero-sub">PhD researcher at IISc Bengaluru specializing in thin-film process engineering, nanofabrication, and semiconductor device characterization. Hands-on experience in sputtering process development, vacuum-based systems, process optimization, lithography, and electrical characterization for superconducting and optoelectronic devices.</p>
     <div class="hero-chips">
-      <span class="chip"><span class="chip-dot"></span>SNSPD Development</span>
-      <span class="chip"><span class="chip-dot"></span>Reactive Sputtering</span>
-      <span class="chip"><span class="chip-dot"></span>Sub-50 nm Nanowires</span>
-      <span class="chip"><span class="chip-dot"></span>Infrared Photodetection</span>
-      <span class="chip"><span class="chip-dot"></span>Cleanroom Fabrication</span>
+      <span class="chip"><span class="chip-dot"></span>Thin-Film Engineering</span>
+      <span class="chip"><span class="chip-dot"></span>Semiconductor Fabrication</span>
+      <span class="chip"><span class="chip-dot"></span>Process Optimization</span>
+      <span class="chip"><span class="chip-dot"></span>Nanofabrication</span>
+      <span class="chip"><span class="chip-dot"></span>Device Characterization</span>
     </div>
     <div class="hero-cta">
-      <a href="#projects"><button class="btn-primary">View Projects</button></a>
+      <a href="projects.html"><button class="btn-primary">View Projects</button></a>
       <a href="#contact"><button class="btn-outline">Get In Touch</button></a>
     </div>
     <div class="hero-stats">
@@ -306,10 +309,11 @@
             <div class="tl-date">2020 – Present</div>
           </div>
           <ul class="tl-bullets">
-            <li>Own end-to-end thin-film deposition and nanofabrication processes — sputtering, lithography, etching, and metallization — in a state-of-the-art cleanroom environment.</li>
-            <li>Executed 300+ sputtering runs, developing deep expertise in process parameter optimization and failure analysis.</li>
-            <li>Developed and stabilized sputtering recipes for NbN, CuFeSe₂, and Sb₂Te₃ films through systematic tuning of power, pressure, gas ratio, and substrate temperature.</li>
-            <li>Correlated process parameters with structural (XRD, Raman) and electrical data to identify failure mechanisms and establish reproducible process windows.</li>
+            <li>Executed 300+ sputtering runs across nitride and chalcogenide material systems, developing stable thin-film deposition processes.</li>
+            <li>Developed and optimized process windows through systematic tuning of pressure, power, gas ratio, and substrate temperature.</li>
+            <li>Led thin-film deposition, nanofabrication, lithography, etching, and metallization activities in a cleanroom environment.</li>
+            <li>Correlated structural and electrical characterization data to identify process instability and improve device performance.</li>
+            <li>Developed Python-based automation workflows for cryogenic electrical measurements and low-temperature device characterization.</li>
           </ul>
         </div>
       </div>
@@ -330,57 +334,43 @@
   </div>
 </section>
 
-<!-- ── PROJECTS ── -->
+<!-- ── PROJECTS teaser ── -->
 <section id="projects">
   <div class="container">
     <p class="section-label">Research Projects</p>
     <h2 class="section-title">Key Projects</h2>
-    <div class="projects-grid">
-
-      <div class="project-card reveal" onclick="openProjectModal('snspd')">
-        <div class="project-tag">Quantum Sensing · Superconductivity</div>
-        <div class="project-title">SNSPD NbN Thin-Film Process Development</div>
-        <div class="project-desc">Debugged and stabilized reactive DC sputtering of ultra-thin NbN films, improving device T<sub>c</sub> from 2.6 K to ~14.5 K. Established lithography and RIE windows for sub-50 nm nanowires. Analyzed switching behavior of meander and spiral SNSPD geometries.</div>
-        <div class="project-pills">
-          <span class="pill">Sputtering</span><span class="pill">EBL</span><span class="pill">RIE</span><span class="pill">SEM</span><span class="pill">XRD</span><span class="pill">Raman</span><span class="pill">XPS</span><span class="pill">Cryogenics</span><span class="pill">Python</span>
+    <div class="proj-teaser-list reveal">
+      <a href="projects.html#snspd" class="proj-teaser-item">
+        <div class="proj-teaser-left">
+          <span class="proj-teaser-num">01</span>
+          <div><div class="proj-teaser-tag">Quantum Sensing · Superconductivity</div><div class="proj-teaser-title">SNSPD NbN Thin-Film Process Development</div></div>
         </div>
-        <div class="project-explore">Explore details <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="project-date">Aug 2024 – Dec 2025</div>
-      </div>
-
-      <div class="project-card reveal" style="transition-delay:.08s" onclick="openProjectModal('sb2te3')">
-        <div class="project-tag">Optoelectronics · Heterojunctions</div>
-        <div class="project-title">Sb₂Te₃ Heterojunction Stack Process Integration</div>
-        <div class="project-desc">Integrated Sb₂Te₃/TiO₂ and Sb₂Te₃/MoTe₂ stacks for broadband photodetection (400–1700 nm). Achieved self-powered photovoltaic operation with dark current as low as 20 pA and responsivity up to 7.8 A/W at 2 V bias.</div>
-        <div class="project-pills">
-          <span class="pill">Sputtering</span><span class="pill">RIE</span><span class="pill">SEM</span><span class="pill">XRD</span><span class="pill">Raman</span><span class="pill">XPS</span><span class="pill">Hall Measurement</span><span class="pill">Python</span>
+        <div class="proj-teaser-right"><span class="proj-teaser-date">2024–2026</span><span class="proj-teaser-arrow">→</span></div>
+      </a>
+      <a href="projects.html#sb2te3" class="proj-teaser-item">
+        <div class="proj-teaser-left">
+          <span class="proj-teaser-num">02</span>
+          <div><div class="proj-teaser-tag">Optoelectronics · Heterojunctions</div><div class="proj-teaser-title">Sb₂Te₃ Heterojunction Photodetectors</div></div>
         </div>
-        <div class="project-explore">Explore details <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="project-date">Jan 2024 – Aug 2024</div>
-      </div>
-
-      <div class="project-card reveal" style="transition-delay:.16s" onclick="openProjectModal('bolometer')">
-        <div class="project-tag">Infrared Sensing · Bolometry</div>
-        <div class="project-title">CuFeSe₂ Nanocrystal Bolometric Sensor</div>
-        <div class="project-desc">Developed solution-processed CuFeSe₂ nanocrystal films for uncooled bolometric sensing. Extracted TCR of 1.9%/K at room temperature with responsivity 0.101 A/W — competitive with commercial VOx devices.</div>
-        <div class="project-pills">
-          <span class="pill">TCR Extraction</span><span class="pill">FTIR</span><span class="pill">UV-Vis</span><span class="pill">SEM</span><span class="pill">Raman</span><span class="pill">Dektak Profilometry</span>
+        <div class="proj-teaser-right"><span class="proj-teaser-date">2024–2026</span><span class="proj-teaser-arrow">→</span></div>
+      </a>
+      <a href="projects.html#cufese2thin" class="proj-teaser-item">
+        <div class="proj-teaser-left">
+          <span class="proj-teaser-num">03</span>
+          <div><div class="proj-teaser-tag">Thermal Sensing · Thin-Film Bolometry</div><div class="proj-teaser-title">CuFeSe₂ Thin-Film Bolometric Devices</div></div>
         </div>
-        <div class="project-explore">Explore details <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="project-date">2021 – 2023</div>
-      </div>
-
-      <div class="project-card reveal" style="transition-delay:.24s" onclick="openProjectModal('cufese2opt')">
-        <div class="project-tag">SWIR Absorbers · Process Optimization</div>
-        <div class="project-title">CuFeSe₂ Thin-Film Process Optimization</div>
-        <div class="project-desc">Developed DC sputtering recipes with controlled stoichiometry and surface morphology. Optimized post-deposition annealing (100–400 °C) to improve crystallinity and study electrical photoresponse of CuFeSe₂ SWIR absorber devices.</div>
-        <div class="project-pills">
-          <span class="pill">TCR Extraction</span><span class="pill">FTIR</span><span class="pill">UV-Vis</span><span class="pill">SEM</span><span class="pill">Raman</span><span class="pill">Dektak Profilometry</span><span class="pill">XPS</span>
+        <div class="proj-teaser-right"><span class="proj-teaser-date">2022–2023</span><span class="proj-teaser-arrow">→</span></div>
+      </a>
+      <a href="projects.html#bolometer" class="proj-teaser-item">
+        <div class="proj-teaser-left">
+          <span class="proj-teaser-num">04</span>
+          <div><div class="proj-teaser-tag">Infrared Sensing · Nanocrystal Devices</div><div class="proj-teaser-title">CuFeSe₂ Nanocrystal Bolometric Devices</div></div>
         </div>
-        <div class="project-explore">Explore details <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="project-date">Dec 2022 – Jan 2023</div>
-      </div>
-
+        <div class="proj-teaser-right"><span class="proj-teaser-date">2021–2023</span><span class="proj-teaser-arrow">→</span></div>
+      </a>
+    </div>
+    <div style="margin-top:32px">
+      <a href="projects.html"><button class="btn-primary" style="display:inline-flex;align-items:center;gap:8px">View All Projects &nbsp;→</button></a>
     </div>
   </div>
 </section>
@@ -390,39 +380,74 @@
   <div class="container">
     <p class="section-label">Technical Skills</p>
     <h2 class="section-title">Expertise</h2>
-    <div class="skills-wrapper">
-      <div class="skill-group reveal">
-        <div class="skill-group-icon">⚡</div>
-        <div class="skill-group-title">Thin-Film Process Engineering</div>
-        <p style="font-size:.84rem;color:var(--muted);line-height:1.65">DC/RF magnetron sputtering of metals, nitrides, and chalcogenides. Reactive sputtering, process window development, stoichiometry control, and rapid thermal annealing.</p>
-        <div class="skill-tags">
-          <span class="skill-tag">DC Magnetron Sputtering</span><span class="skill-tag">RF Sputtering</span><span class="skill-tag">Reactive Sputtering</span><span class="skill-tag">NbN Deposition</span><span class="skill-tag">Chalcogenides</span><span class="skill-tag">RTA</span>
+    <div class="skills-stack">
+
+      <div class="skill-row reveal">
+        <div class="skill-row-header">
+          <span class="skill-row-icon">⚡</span>
+          <span class="skill-row-title">Thin-Film Process Engineering</span>
+        </div>
+        <div class="skill-row-tags">
+          <span class="skill-tag">DC Magnetron Sputtering</span>
+          <span class="skill-tag">RF Sputtering</span>
+          <span class="skill-tag">Reactive Sputtering</span>
+          <span class="skill-tag">NbN Deposition</span>
+          <span class="skill-tag">Chalcogenide Films</span>
+          <span class="skill-tag">Rapid Thermal Annealing</span>
+          <span class="skill-tag">Process Window Development</span>
+          <span class="skill-tag">Stoichiometry Control</span>
         </div>
       </div>
-      <div class="skill-group reveal" style="transition-delay:.1s">
-        <div class="skill-group-icon">🔬</div>
-        <div class="skill-group-title">Micro/Nanofabrication</div>
-        <p style="font-size:.84rem;color:var(--muted);line-height:1.65">Photolithography (Heidelberg µPG 501), e-beam lithography, dose optimization, sub-50 nm patterning, RIE, and metal lift-off.</p>
-        <div class="skill-tags">
-          <span class="skill-tag">Photolithography</span><span class="skill-tag">E-beam Lithography</span><span class="skill-tag">Sub-50 nm Patterning</span><span class="skill-tag">RIE</span><span class="skill-tag">Metal Lift-off</span><span class="skill-tag">Dose Optimization</span>
+
+      <div class="skill-row reveal" style="transition-delay:.08s">
+        <div class="skill-row-header">
+          <span class="skill-row-icon">🔬</span>
+          <span class="skill-row-title">Micro/Nanofabrication</span>
+        </div>
+        <div class="skill-row-tags">
+          <span class="skill-tag">Photolithography</span>
+          <span class="skill-tag">E-beam Lithography</span>
+          <span class="skill-tag">Sub-50 nm Patterning</span>
+          <span class="skill-tag">RIE</span>
+          <span class="skill-tag">Metal Lift-off</span>
+          <span class="skill-tag">Dose Optimization</span>
+          <span class="skill-tag">Heidelberg µPG 501</span>
         </div>
       </div>
-      <div class="skill-group reveal" style="transition-delay:.2s">
-        <div class="skill-group-icon">📊</div>
-        <div class="skill-group-title">Metrology &amp; Characterization</div>
-        <p style="font-size:.84rem;color:var(--muted);line-height:1.65">Structural and electrical characterization to correlate process parameters with device performance and identify failure mechanisms.</p>
-        <div class="skill-tags">
-          <span class="skill-tag">XRD</span><span class="skill-tag">XPS</span><span class="skill-tag">SEM</span><span class="skill-tag">FTIR</span><span class="skill-tag">Raman</span><span class="skill-tag">UV-Vis Spectroscopy</span><span class="skill-tag">Dektak Profilometry</span><span class="skill-tag">Hall Measurements</span><span class="skill-tag">TCR Extraction</span><span class="skill-tag">Cryogenics</span><span class="skill-tag">Electrical Characterization</span>
+
+      <div class="skill-row reveal" style="transition-delay:.16s">
+        <div class="skill-row-header">
+          <span class="skill-row-icon">📊</span>
+          <span class="skill-row-title">Metrology &amp; Characterization</span>
+        </div>
+        <div class="skill-row-tags">
+          <span class="skill-tag">XRD</span>
+          <span class="skill-tag">XPS</span>
+          <span class="skill-tag">SEM</span>
+          <span class="skill-tag">FTIR</span>
+          <span class="skill-tag">Raman Spectroscopy</span>
+          <span class="skill-tag">UV-Vis Spectroscopy</span>
+          <span class="skill-tag">Dektak Profilometry</span>
+          <span class="skill-tag">Hall Measurements</span>
+          <span class="skill-tag">TCR Extraction</span>
+          <span class="skill-tag">Cryogenic Characterization</span>
+          <span class="skill-tag">Electrical Characterization</span>
         </div>
       </div>
-      <div class="skill-group reveal" style="transition-delay:.3s">
-        <div class="skill-group-icon">💻</div>
-        <div class="skill-group-title">Data &amp; Layout Tools</div>
-        <p style="font-size:.84rem;color:var(--muted);line-height:1.65">Data analysis, visualization, and photomask design for fabrication workflows.</p>
-        <div class="skill-tags">
-          <span class="skill-tag">MATLAB</span><span class="skill-tag">Python</span><span class="skill-tag">KLayout</span><span class="skill-tag">CleWin</span>
+
+      <div class="skill-row reveal" style="transition-delay:.24s">
+        <div class="skill-row-header">
+          <span class="skill-row-icon">💻</span>
+          <span class="skill-row-title">Data &amp; Layout Tools</span>
+        </div>
+        <div class="skill-row-tags">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">MATLAB</span>
+          <span class="skill-tag">KLayout</span>
+          <span class="skill-tag">CleWin</span>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -687,44 +712,34 @@ const PROJECTS = {
   snspd: {
     tag: 'Quantum Sensing · Superconductivity',
     title: 'SNSPD NbN Thin-Film Process Development',
-    period: 'Aug 2024 – Dec 2025',
+    period: '2024 – 2026',
     images: ['images/projects/snspd.png'],
     pills: ['Sputtering','Sub-50 nm EBL','RIE','SEM','XRD','Raman','XPS','Hall Measurement','Cryogenics','Electrical Characterization','Python'],
-    abstract: `We present a systematic switching-current statistics study connecting NbN film quality, nanowire geometry, and phase-slip barrier physics within a single quantitative framework. Thin films of cubic δ-NbN are grown by reactive DC magnetron sputtering on c-plane sapphire and patterned into 100 nm-wide meander (M100) and spiral (S100) nanowires. XRD, XPS, and TEM confirm near-stoichiometric, single-phase δ-NbN with Tc values ranging from ~8 K (disordered) to 14.6 K (optimised).
-
-Applying the Langer–Ambegaokar–McCumber–Halperin (LAMH) escape-rate formalism to temperature- and illumination-dependent switching distributions, we extract two device-level figures of merit: the thermal barrier-softening coefficient κ_T and the photon–barrier coupling coefficient κ_p. Film disorder raises κ_T from 1.55 to 4.05 — a factor-of-2.6 increase — reflecting accelerated erosion of the condensation-energy barrier as compositional non-uniformity steepens the Ic(T) curve.
-
-At fixed material quality, the spiral geometry yields κ_p = 15.1 versus κ_p = 6.4 for the meander — a factor-of-2.4 enhancement attributed to elimination of current-crowding-induced switching-site localization at 180° turns. SEM-derived line-edge roughness measurements demonstrate a direct correlation between roughness amplitude and switching-current distribution width. The orthogonality of κ_T (film-quality controlled) and κ_p (geometry controlled) defines a practical two-stage optimization strategy for SNSPDs: minimize disorder to reduce dark-count rate, then engineer nanowire layout to maximize photon sensitivity.`
+    abstract: `This work covers the development of reactive DC sputtering processes for ultra-thin NbN superconducting films and their integration into superconducting nanowire single-photon detector (SNSPD) devices. Research spans sputtering process optimization for improved superconducting properties, electron-beam lithography and reactive ion etching for sub-50 nm nanowire patterning, and cryogenic electrical characterization of SNSPD device geometries.\n\nThe study establishes correlations between film growth conditions, structural quality, and superconducting device performance, with the goal of identifying reliable process windows for reproducible SNSPD fabrication. Details will be available upon publication.`
   },
   sb2te3: {
     tag: 'Optoelectronics · Heterojunctions',
-    title: 'Sb₂Te₃ Heterojunction Stack Process Integration',
-    period: 'Jan 2024 – Aug 2024',
+    title: 'Sb₂Te₃ Heterojunction Photodetectors',
+    period: '2024 – 2026',
     images: ['images/projects/sb2te3_tio2.png','images/projects/sb2te3_mote2.png'],
     pills: ['Sputtering','RIE','SEM','XRD','Raman','XPS','Hall Measurement','Electrical Characterization','Python'],
-    abstract: `Sb₂Te₃/TiO₂ Heterojunction: We report a self-powered broadband near-infrared photodetector using an Sb₂Te₃/TiO₂ heterojunction. The device leverages the built-in electric field at the heterojunction interface to achieve responsivity without external bias. Dark current is only 20 pA. Responsivity is 11.4 mA/W at zero bias, increasing to 7.8 A/W at 2 V applied bias. The detector shows broadband sensitivity from 400 to 1100 nm, making it useful for low-light and broadband optoelectronic applications.
-
-Sb₂Te₃/MoTe₂ Heterostructure: We report a vertical Sb₂Te₃/MoTe₂ heterostructure photodetector enabling broadband, self-powered operation. Spectral analysis confirms absorption till 1700 nm, with MoTe₂ active in the near-infrared and Sb₂Te₃ extending the response further. Under 730 nm illumination (232 W/cm²), the device exhibits a photocurrent of 10.02 μA and an estimated responsivity of 21.54 mA/W. Strong rectifying behavior, low dark current, and photovoltaic response validate the potential of this heterostructure for low-power, broadband photodetection in advanced optoelectronic applications.`
+    abstract: `This work covers the integration of Sb₂Te₃-based heterojunction thin-film stacks — including Sb₂Te₃/TiO₂ and Sb₂Te₃/TMDC configurations — for broadband infrared photodetection. Research encompasses sputtering process development for multilayer thin-film deposition, interface engineering through annealing optimization, and structural and optoelectronic device characterization across the visible to short-wave infrared spectral range.\n\nThe study focuses on correlating thin-film processing conditions with heterojunction interface quality and photodetector device performance. Details will be available upon publication.`
   },
   bolometer: {
-    tag: 'Infrared Sensing · Bolometry',
-    title: 'CuFeSe₂ Nanocrystal Bolometric Sensor',
+    tag: 'Infrared Sensing · Nanocrystal Devices',
+    title: 'CuFeSe₂ Nanocrystal Bolometric Devices',
     period: '2021 – 2023',
     images: ['images/projects/cufese2_bolometer.png'],
     pills: ['TCR Extraction','FTIR','UV-Vis Spectroscopy','SEM','Raman','Dektak Profilometry'],
-    abstract: `Microbolometers have emerged as a cost-effective alternative to cooled infrared photon detectors, albeit with trade-offs in responsivity (Rλ), detectivity (D*), and response time. This study focuses on the optoelectronic and bolometric characteristics of CuFeSe₂ nanocrystals (NCs) in a colloidal solution. These NCs exhibit a significant change in resistivity (ρ) when subjected to temperature variations ranging from 170 K to 400 K.
-
-The Temperature Coefficient of Resistance (TCR, α) is 1.9%/K for a room temperature resistivity of 505 Ω·cm. The responsivity of CuFeSe₂ NCs is 0.101 A/W and the Hall mobility of the colloidal solution is 0.1 cm²/V/s. A comprehensive comparison was conducted between the performance metrics of established bolometer materials (VOx and a-Si) and colloidal CuFeSe₂ NCs. Based on the results, colloidal CuFeSe₂ NCs are a promising option for future uncooled bolometer technology, bridging the performance gap between cooled photon detectors and conventional microbolometers.`
+    abstract: `Published: Physica Status Solidi (RRL), 2024. DOI: 10.1002/pssr.202300440\n\nMicrobolometers have emerged as a cost-effective alternative to cooled infrared photon detectors, with trade-offs in responsivity (Rλ), detectivity (D*), and response time. This study focuses on the optoelectronic and bolometric characteristics of CuFeSe₂ nanocrystals (NCs) in a colloidal solution. These NCs exhibit a significant change in resistivity (ρ) when subjected to temperature variations from 170 K to 400 K.\n\nThe Temperature Coefficient of Resistance (TCR, α) is 1.9%/K for a room temperature resistivity of 505 Ω·cm. Responsivity of CuFeSe₂ NCs is 0.101 A/W and Hall mobility is 0.1 cm²/V/s. A comprehensive comparison with VOx and a-Si demonstrates that colloidal CuFeSe₂ NCs are a promising material for next-generation uncooled bolometer technology.`
   },
   cufese2opt: {
-    tag: 'SWIR Absorbers · Process Optimization',
-    title: 'CuFeSe₂ Thin-Film Process Optimization',
+    tag: 'Thermal Sensing · Thin-Film Bolometry',
+    title: 'CuFeSe₂ Thin-Film Bolometric Devices',
     period: 'Dec 2022 – Jan 2023',
     images: [],
     pills: ['TCR Extraction','FTIR','UV-Vis Spectroscopy','SEM','Raman','Dektak Profilometry','XPS'],
-    abstract: `Developed DC sputtering recipes for CuFeSe₂ thin films with controlled stoichiometry and surface morphology targeting SWIR absorption. Systematic optimization of sputtering power, pressure, and gas ratios established process windows yielding films with reproducible electrical and optical properties.
-
-Post-deposition rapid thermal annealing was optimized across 100–400 °C to improve crystallinity (confirmed by XRD and Raman). Temperature-dependent electrical characterization tracked the evolution of the TCR and photoresponse as a function of annealing condition, providing a direct link between structural order and device-level performance. The process windows established here underpinned subsequent nanocrystal and heterostructure device work.`
+    abstract: `This work presents sputtered CuFeSe₂ thin-film process development targeting infrared bolometric sensing applications. Research covers deposition parameter optimization for controlled stoichiometry and surface morphology, post-deposition annealing for crystallinity improvement, and temperature-dependent electrical characterization for bolometric performance evaluation.\n\nThe study establishes relationships between processing conditions, structural evolution, and bolometric device response, providing a framework for process-to-performance optimization in thin-film infrared sensing materials. Details will be available upon publication.`
   }
 };
 
